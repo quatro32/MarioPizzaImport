@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="dbi298845_prangersModelStoreContainer" CdmEntityContainer="dbi298845_prangersEntities">
+    <EntitySetMapping Name="addresses">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.address">
+        <MappingFragment StoreEntitySet="address">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="number" ColumnName="number" />
+          <ScalarProperty Name="countrycode" ColumnName="countrycode" />
+          <ScalarProperty Name="postalcodeid" ColumnName="postalcodeid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="bottoms">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.bottom">
+        <MappingFragment StoreEntitySet="bottom">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="diameter" ColumnName="diameter" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="bottomprices">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.bottomprice">
+        <MappingFragment StoreEntitySet="bottomprice">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="bottomid" ColumnName="bottomid" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="currency" ColumnName="currency" />
+          <ScalarProperty Name="startdate" ColumnName="startdate" />
+          <ScalarProperty Name="vat" ColumnName="vat" />
+          <ScalarProperty Name="countrycodeid" ColumnName="countrycodeid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="countrycodes">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.countrycode">
+        <MappingFragment StoreEntitySet="countrycode">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="code" ColumnName="code" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="coupons">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.coupon">
+        <MappingFragment StoreEntitySet="coupon">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="startdate" ColumnName="startdate" />
+          <ScalarProperty Name="enddate" ColumnName="enddate" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+          <ScalarProperty Name="percentage" ColumnName="percentage" />
+          <ScalarProperty Name="applyon" ColumnName="applyon" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="productcategoryid" ColumnName="productcategoryid" />
+          <ScalarProperty Name="isfordeliverytypeonly" ColumnName="isfordeliverytypeonly" />
+          <ScalarProperty Name="pricetreshold" ColumnName="pricetreshold" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="deliverytypes">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.deliverytype">
+        <MappingFragment StoreEntitySet="deliverytype">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ingredients">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.ingredient">
+        <MappingFragment StoreEntitySet="ingredient">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="isvegetarian" ColumnName="isvegetarian" />
+          <ScalarProperty Name="isspicy" ColumnName="isspicy" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ingredientprices">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.ingredientprice">
+        <MappingFragment StoreEntitySet="ingredientprice">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="ingredientid" ColumnName="ingredientid" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="startdate" ColumnName="startdate" />
+          <ScalarProperty Name="currency" ColumnName="currency" />
+          <ScalarProperty Name="vat" ColumnName="vat" />
+          <ScalarProperty Name="countrycodeid" ColumnName="countrycodeid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="orders">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.order">
+        <MappingFragment StoreEntitySet="order">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="datecreated" ColumnName="datecreated" />
+          <ScalarProperty Name="datedelivered" ColumnName="datedelivered" />
+          <ScalarProperty Name="phonenumber" ColumnName="phonenumber" />
+          <ScalarProperty Name="clientname" ColumnName="clientname" />
+          <ScalarProperty Name="userid" ColumnName="userid" />
+          <ScalarProperty Name="couponid" ColumnName="couponid" />
+          <ScalarProperty Name="remark" ColumnName="remark" />
+          <ScalarProperty Name="deliverytypeid" ColumnName="deliverytypeid" />
+          <ScalarProperty Name="addressid" ColumnName="addressid" />
+          <ScalarProperty Name="storeid" ColumnName="storeid" />
+          <ScalarProperty Name="preferredtime" ColumnName="preferredtime" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="discount" ColumnName="discount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="orderlines">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.orderline">
+        <MappingFragment StoreEntitySet="orderline">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="productid" ColumnName="productid" />
+          <ScalarProperty Name="orderid" ColumnName="orderid" />
+          <ScalarProperty Name="bottomid" ColumnName="bottomid" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+          <ScalarProperty Name="price" ColumnName="price" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="postalcodes">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.postalcode">
+        <MappingFragment StoreEntitySet="postalcode">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="postalcode1" ColumnName="postalcode" />
+          <ScalarProperty Name="iseven" ColumnName="iseven" />
+          <ScalarProperty Name="startingnumber" ColumnName="startingnumber" />
+          <ScalarProperty Name="endingnumber" ColumnName="endingnumber" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="street" ColumnName="street" />
+          <ScalarProperty Name="townshipid" ColumnName="townshipid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="products">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.product">
+        <MappingFragment StoreEntitySet="product">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="sauceid" ColumnName="sauceid" />
+          <ScalarProperty Name="productcategory" ColumnName="productcategory" />
+          <ScalarProperty Name="isvegetarian" ColumnName="isvegetarian" />
+          <ScalarProperty Name="isspicy" ColumnName="isspicy" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="productcategories">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.productcategory">
+        <MappingFragment StoreEntitySet="productcategory">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="parentproductcategoryid" ColumnName="parentproductcategoryid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="productingredients">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.productingredient">
+        <MappingFragment StoreEntitySet="productingredient">
+          <ScalarProperty Name="productid" ColumnName="productid" />
+          <ScalarProperty Name="ingredientid" ColumnName="ingredientid" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="productorderingredients">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.productorderingredient">
+        <MappingFragment StoreEntitySet="productorderingredient">
+          <ScalarProperty Name="productorderid" ColumnName="productorderid" />
+          <ScalarProperty Name="ingredientid" ColumnName="ingredientid" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="productordersauces">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.productordersauce">
+        <MappingFragment StoreEntitySet="productordersauce">
+          <ScalarProperty Name="productorderid" ColumnName="productorderid" />
+          <ScalarProperty Name="sauceid" ColumnName="sauceid" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="productprices">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.productprice">
+        <MappingFragment StoreEntitySet="productprice">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="productid" ColumnName="productid" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="currency" ColumnName="currency" />
+          <ScalarProperty Name="startdate" ColumnName="startdate" />
+          <ScalarProperty Name="vat" ColumnName="vat" />
+          <ScalarProperty Name="countrycodeid" ColumnName="countrycodeid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sauces">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.sauce">
+        <MappingFragment StoreEntitySet="sauce">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="stores">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.store">
+        <MappingFragment StoreEntitySet="store">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="addressid" ColumnName="addressid" />
+          <ScalarProperty Name="phonenumber" ColumnName="phonenumber" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="townships">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.township">
+        <MappingFragment StoreEntitySet="township">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="users">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.user">
+        <MappingFragment StoreEntitySet="user">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="addressid" ColumnName="addressid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

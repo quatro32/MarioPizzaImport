@@ -1,0 +1,1734 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="dbi298845_prangersModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="address">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="number" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="countrycode" Type="varchar" MaxLength="2" />
+          <Property Name="postalcodeid" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="bottom">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="diameter" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="bottomprice">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="bottomid" Type="int" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="currency" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="startdate" Type="datetime" Nullable="false" />
+          <Property Name="vat" Type="decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="countrycodeid" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="countrycode">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="code" Type="varchar" MaxLength="2" />
+        </EntityType>
+        <EntityType Name="coupon">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="code" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="startdate" Type="datetime" Nullable="false" />
+          <Property Name="enddate" Type="datetime" Nullable="false" />
+          <Property Name="amount" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="percentage" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="applyon" Type="int" />
+          <Property Name="description" Type="varchar" MaxLength="100" />
+          <Property Name="productcategoryid" Type="int" />
+          <Property Name="isfordeliverytypeonly" Type="int" />
+          <Property Name="pricetreshold" Type="decimal" Precision="5" Scale="2" />
+        </EntityType>
+        <EntityType Name="deliverytype">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ingredient">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="isvegetarian" Type="bit" Nullable="false" />
+          <Property Name="isspicy" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ingredientprice">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ingredientid" Type="int" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="startdate" Type="datetime" Nullable="false" />
+          <Property Name="currency" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="vat" Type="decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="countrycodeid" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="order">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="datecreated" Type="datetime" Nullable="false" />
+          <Property Name="datedelivered" Type="datetime" />
+          <Property Name="phonenumber" Type="varchar" MaxLength="45" />
+          <Property Name="clientname" Type="varchar" MaxLength="100" />
+          <Property Name="userid" Type="int" />
+          <Property Name="couponid" Type="int" />
+          <Property Name="remark" Type="varchar" MaxLength="255" />
+          <Property Name="deliverytypeid" Type="int" Nullable="false" />
+          <Property Name="addressid" Type="int" Nullable="false" />
+          <Property Name="storeid" Type="int" Nullable="false" />
+          <Property Name="preferredtime" Type="datetime" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="discount" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="orderline">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="productid" Type="int" Nullable="false" />
+          <Property Name="orderid" Type="int" Nullable="false" />
+          <Property Name="bottomid" Type="int" />
+          <Property Name="amount" Type="int" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="postalcode">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="postalcode" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="iseven" Type="bit" Nullable="false" />
+          <Property Name="startingnumber" Type="int" Nullable="false" />
+          <Property Name="endingnumber" Type="int" Nullable="false" />
+          <Property Name="city" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="street" Type="varchar" MaxLength="255" />
+          <Property Name="townshipid" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="product">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="sauceid" Type="int" />
+          <Property Name="productcategory" Type="int" Nullable="false" />
+          <Property Name="isvegetarian" Type="bit" Nullable="false" />
+          <Property Name="isspicy" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="productcategory">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="parentproductcategoryid" Type="int" />
+        </EntityType>
+        <EntityType Name="productingredient">
+          <Key>
+            <PropertyRef Name="productid" />
+            <PropertyRef Name="ingredientid" />
+          </Key>
+          <Property Name="productid" Type="int" Nullable="false" />
+          <Property Name="ingredientid" Type="int" Nullable="false" />
+          <Property Name="amount" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="productorderingredient">
+          <Key>
+            <PropertyRef Name="productorderid" />
+            <PropertyRef Name="ingredientid" />
+          </Key>
+          <Property Name="productorderid" Type="int" Nullable="false" />
+          <Property Name="ingredientid" Type="int" Nullable="false" />
+          <Property Name="amount" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="productordersauce">
+          <Key>
+            <PropertyRef Name="productorderid" />
+            <PropertyRef Name="sauceid" />
+          </Key>
+          <Property Name="productorderid" Type="int" Nullable="false" />
+          <Property Name="sauceid" Type="int" Nullable="false" />
+          <Property Name="amount" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="productprice">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="productid" Type="int" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="currency" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="startdate" Type="datetime" Nullable="false" />
+          <Property Name="vat" Type="decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="countrycodeid" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sauce">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" />
+        </EntityType>
+        <EntityType Name="store">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" />
+          <Property Name="addressid" Type="int" Nullable="false" />
+          <Property Name="phonenumber" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="township">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="password" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="addressid" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_address_postalcode">
+          <End Role="postalcode" Type="Self.postalcode" Multiplicity="1" />
+          <End Role="address" Type="Self.address" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="postalcode">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="address">
+              <PropertyRef Name="postalcodeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_bottomprice_bottom">
+          <End Role="bottom" Type="Self.bottom" Multiplicity="1" />
+          <End Role="bottomprice" Type="Self.bottomprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bottom">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="bottomprice">
+              <PropertyRef Name="bottomid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_bottomprice_countrycode1">
+          <End Role="countrycode" Type="Self.countrycode" Multiplicity="1" />
+          <End Role="bottomprice" Type="Self.bottomprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="countrycode">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="bottomprice">
+              <PropertyRef Name="countrycodeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_coupon_deliverytype">
+          <End Role="deliverytype" Type="Self.deliverytype" Multiplicity="0..1" />
+          <End Role="coupon" Type="Self.coupon" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="deliverytype">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="coupon">
+              <PropertyRef Name="isfordeliverytypeonly" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_coupon_productcategory">
+          <End Role="productcategory" Type="Self.productcategory" Multiplicity="0..1" />
+          <End Role="coupon" Type="Self.coupon" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productcategory">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="coupon">
+              <PropertyRef Name="productcategoryid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ingredientprice_countrycode1">
+          <End Role="countrycode" Type="Self.countrycode" Multiplicity="1" />
+          <End Role="ingredientprice" Type="Self.ingredientprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="countrycode">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ingredientprice">
+              <PropertyRef Name="countrycodeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ingredientprice_ingredient">
+          <End Role="ingredient" Type="Self.ingredient" Multiplicity="1" />
+          <End Role="ingredientprice" Type="Self.ingredientprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ingredient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ingredientprice">
+              <PropertyRef Name="ingredientid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_address">
+          <End Role="address" Type="Self.address" Multiplicity="1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="address">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="addressid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_client">
+          <End Role="user" Type="Self.user" Multiplicity="0..1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="userid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_coupon">
+          <End Role="coupon" Type="Self.coupon" Multiplicity="0..1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="coupon">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="couponid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_deliverytype">
+          <End Role="deliverytype" Type="Self.deliverytype" Multiplicity="1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="deliverytype">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="deliverytypeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_store">
+          <End Role="store" Type="Self.store" Multiplicity="1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="store">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="storeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_pizza_sauce">
+          <End Role="sauce" Type="Self.sauce" Multiplicity="0..1" />
+          <End Role="product" Type="Self.product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sauce">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="product">
+              <PropertyRef Name="sauceid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_postalcode_township">
+          <End Role="township" Type="Self.township" Multiplicity="1" />
+          <End Role="postalcode" Type="Self.postalcode" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="township">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="postalcode">
+              <PropertyRef Name="townshipid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_product_productsubcategory">
+          <End Role="productcategory" Type="Self.productcategory" Multiplicity="1" />
+          <End Role="product" Type="Self.product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productcategory">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="product">
+              <PropertyRef Name="productcategory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productcategory_productcategory">
+          <End Role="productcategory" Type="Self.productcategory" Multiplicity="0..1" />
+          <End Role="productcategory1" Type="Self.productcategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productcategory">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productcategory1">
+              <PropertyRef Name="parentproductcategoryid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productingredient_ingredient">
+          <End Role="ingredient" Type="Self.ingredient" Multiplicity="1" />
+          <End Role="productingredient" Type="Self.productingredient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ingredient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productingredient">
+              <PropertyRef Name="ingredientid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productingredient_product">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="productingredient" Type="Self.productingredient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productingredient">
+              <PropertyRef Name="productid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productorder_bottom">
+          <End Role="bottom" Type="Self.bottom" Multiplicity="0..1" />
+          <End Role="orderline" Type="Self.orderline" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bottom">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orderline">
+              <PropertyRef Name="bottomid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productorder_order">
+          <End Role="order" Type="Self.order" Multiplicity="1" />
+          <End Role="orderline" Type="Self.orderline" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="order">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orderline">
+              <PropertyRef Name="orderid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productorder_pizza">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="orderline" Type="Self.orderline" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orderline">
+              <PropertyRef Name="productid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productordersauce_productorder">
+          <End Role="orderline" Type="Self.orderline" Multiplicity="1" />
+          <End Role="productordersauce" Type="Self.productordersauce" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="orderline">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productordersauce">
+              <PropertyRef Name="productorderid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productordersauce_sauce">
+          <End Role="sauce" Type="Self.sauce" Multiplicity="1" />
+          <End Role="productordersauce" Type="Self.productordersauce" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sauce">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productordersauce">
+              <PropertyRef Name="sauceid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productprice_countrycode">
+          <End Role="countrycode" Type="Self.countrycode" Multiplicity="1" />
+          <End Role="productprice" Type="Self.productprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="countrycode">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productprice">
+              <PropertyRef Name="countrycodeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productprice_product">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="productprice" Type="Self.productprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productprice">
+              <PropertyRef Name="productid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_store_address">
+          <End Role="address" Type="Self.address" Multiplicity="1" />
+          <End Role="store" Type="Self.store" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="address">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="store">
+              <PropertyRef Name="addressid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_user_address">
+          <End Role="address" Type="Self.address" Multiplicity="1" />
+          <End Role="user" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="address">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="addressid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="pizzaorderingredients_ingredients">
+          <End Role="ingredient" Type="Self.ingredient" Multiplicity="1" />
+          <End Role="productorderingredient" Type="Self.productorderingredient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ingredient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productorderingredient">
+              <PropertyRef Name="ingredientid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="pizzaorderingredients_orderpizza">
+          <End Role="orderline" Type="Self.orderline" Multiplicity="1" />
+          <End Role="productorderingredient" Type="Self.productorderingredient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="orderline">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productorderingredient">
+              <PropertyRef Name="productorderid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="dbi298845_prangersModelStoreContainer">
+          <EntitySet Name="address" EntityType="Self.address" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bottom" EntityType="Self.bottom" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bottomprice" EntityType="Self.bottomprice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="countrycode" EntityType="Self.countrycode" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="coupon" EntityType="Self.coupon" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="deliverytype" EntityType="Self.deliverytype" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ingredient" EntityType="Self.ingredient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ingredientprice" EntityType="Self.ingredientprice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="order" EntityType="Self.order" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="orderline" EntityType="Self.orderline" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="postalcode" EntityType="Self.postalcode" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="product" EntityType="Self.product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="productcategory" EntityType="Self.productcategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="productingredient" EntityType="Self.productingredient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="productorderingredient" EntityType="Self.productorderingredient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="productordersauce" EntityType="Self.productordersauce" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="productprice" EntityType="Self.productprice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sauce" EntityType="Self.sauce" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="store" EntityType="Self.store" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="township" EntityType="Self.township" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_address_postalcode" Association="Self.fk_address_postalcode">
+            <End Role="postalcode" EntitySet="postalcode" />
+            <End Role="address" EntitySet="address" />
+          </AssociationSet>
+          <AssociationSet Name="fk_bottomprice_bottom" Association="Self.fk_bottomprice_bottom">
+            <End Role="bottom" EntitySet="bottom" />
+            <End Role="bottomprice" EntitySet="bottomprice" />
+          </AssociationSet>
+          <AssociationSet Name="fk_bottomprice_countrycode1" Association="Self.fk_bottomprice_countrycode1">
+            <End Role="countrycode" EntitySet="countrycode" />
+            <End Role="bottomprice" EntitySet="bottomprice" />
+          </AssociationSet>
+          <AssociationSet Name="fk_coupon_deliverytype" Association="Self.fk_coupon_deliverytype">
+            <End Role="deliverytype" EntitySet="deliverytype" />
+            <End Role="coupon" EntitySet="coupon" />
+          </AssociationSet>
+          <AssociationSet Name="fk_coupon_productcategory" Association="Self.fk_coupon_productcategory">
+            <End Role="productcategory" EntitySet="productcategory" />
+            <End Role="coupon" EntitySet="coupon" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ingredientprice_countrycode1" Association="Self.fk_ingredientprice_countrycode1">
+            <End Role="countrycode" EntitySet="countrycode" />
+            <End Role="ingredientprice" EntitySet="ingredientprice" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ingredientprice_ingredient" Association="Self.fk_ingredientprice_ingredient">
+            <End Role="ingredient" EntitySet="ingredient" />
+            <End Role="ingredientprice" EntitySet="ingredientprice" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_address" Association="Self.fk_order_address">
+            <End Role="address" EntitySet="address" />
+            <End Role="order" EntitySet="order" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_client" Association="Self.fk_order_client">
+            <End Role="user" EntitySet="user" />
+            <End Role="order" EntitySet="order" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_coupon" Association="Self.fk_order_coupon">
+            <End Role="coupon" EntitySet="coupon" />
+            <End Role="order" EntitySet="order" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_deliverytype" Association="Self.fk_order_deliverytype">
+            <End Role="deliverytype" EntitySet="deliverytype" />
+            <End Role="order" EntitySet="order" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_store" Association="Self.fk_order_store">
+            <End Role="store" EntitySet="store" />
+            <End Role="order" EntitySet="order" />
+          </AssociationSet>
+          <AssociationSet Name="fk_pizza_sauce" Association="Self.fk_pizza_sauce">
+            <End Role="sauce" EntitySet="sauce" />
+            <End Role="product" EntitySet="product" />
+          </AssociationSet>
+          <AssociationSet Name="fk_postalcode_township" Association="Self.fk_postalcode_township">
+            <End Role="township" EntitySet="township" />
+            <End Role="postalcode" EntitySet="postalcode" />
+          </AssociationSet>
+          <AssociationSet Name="fk_product_productsubcategory" Association="Self.fk_product_productsubcategory">
+            <End Role="productcategory" EntitySet="productcategory" />
+            <End Role="product" EntitySet="product" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productcategory_productcategory" Association="Self.fk_productcategory_productcategory">
+            <End Role="productcategory" EntitySet="productcategory" />
+            <End Role="productcategory1" EntitySet="productcategory" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productingredient_ingredient" Association="Self.fk_productingredient_ingredient">
+            <End Role="ingredient" EntitySet="ingredient" />
+            <End Role="productingredient" EntitySet="productingredient" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productingredient_product" Association="Self.fk_productingredient_product">
+            <End Role="product" EntitySet="product" />
+            <End Role="productingredient" EntitySet="productingredient" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productorder_bottom" Association="Self.fk_productorder_bottom">
+            <End Role="bottom" EntitySet="bottom" />
+            <End Role="orderline" EntitySet="orderline" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productorder_order" Association="Self.fk_productorder_order">
+            <End Role="order" EntitySet="order" />
+            <End Role="orderline" EntitySet="orderline" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productorder_pizza" Association="Self.fk_productorder_pizza">
+            <End Role="product" EntitySet="product" />
+            <End Role="orderline" EntitySet="orderline" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productordersauce_productorder" Association="Self.fk_productordersauce_productorder">
+            <End Role="orderline" EntitySet="orderline" />
+            <End Role="productordersauce" EntitySet="productordersauce" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productordersauce_sauce" Association="Self.fk_productordersauce_sauce">
+            <End Role="sauce" EntitySet="sauce" />
+            <End Role="productordersauce" EntitySet="productordersauce" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productprice_countrycode" Association="Self.fk_productprice_countrycode">
+            <End Role="countrycode" EntitySet="countrycode" />
+            <End Role="productprice" EntitySet="productprice" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productprice_product" Association="Self.fk_productprice_product">
+            <End Role="product" EntitySet="product" />
+            <End Role="productprice" EntitySet="productprice" />
+          </AssociationSet>
+          <AssociationSet Name="fk_store_address" Association="Self.fk_store_address">
+            <End Role="address" EntitySet="address" />
+            <End Role="store" EntitySet="store" />
+          </AssociationSet>
+          <AssociationSet Name="fk_user_address" Association="Self.fk_user_address">
+            <End Role="address" EntitySet="address" />
+            <End Role="user" EntitySet="user" />
+          </AssociationSet>
+          <AssociationSet Name="pizzaorderingredients_ingredients" Association="Self.pizzaorderingredients_ingredients">
+            <End Role="ingredient" EntitySet="ingredient" />
+            <End Role="productorderingredient" EntitySet="productorderingredient" />
+          </AssociationSet>
+          <AssociationSet Name="pizzaorderingredients_orderpizza" Association="Self.pizzaorderingredients_orderpizza">
+            <End Role="orderline" EntitySet="orderline" />
+            <End Role="productorderingredient" EntitySet="productorderingredient" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="dbi298845_prangersModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="address">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="number" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="countrycode" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="postalcodeid" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="postalcode" Relationship="Self.fk_address_postalcode" FromRole="address" ToRole="postalcode" />
+          <NavigationProperty Name="orders" Relationship="Self.fk_order_address" FromRole="address" ToRole="order" />
+          <NavigationProperty Name="stores" Relationship="Self.fk_store_address" FromRole="address" ToRole="store" />
+          <NavigationProperty Name="users" Relationship="Self.fk_user_address" FromRole="address" ToRole="user" />
+        </EntityType>
+        <EntityType Name="bottom">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="diameter" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="bottomprices" Relationship="Self.fk_bottomprice_bottom" FromRole="bottom" ToRole="bottomprice" />
+          <NavigationProperty Name="orderlines" Relationship="Self.fk_productorder_bottom" FromRole="bottom" ToRole="orderline" />
+        </EntityType>
+        <EntityType Name="bottomprice">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="bottomid" Type="Int32" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="currency" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startdate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="vat" Type="Decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="countrycodeid" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="bottom" Relationship="Self.fk_bottomprice_bottom" FromRole="bottomprice" ToRole="bottom" />
+          <NavigationProperty Name="countrycode" Relationship="Self.fk_bottomprice_countrycode1" FromRole="bottomprice" ToRole="countrycode" />
+        </EntityType>
+        <EntityType Name="countrycode">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="code" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="bottomprices" Relationship="Self.fk_bottomprice_countrycode1" FromRole="countrycode" ToRole="bottomprice" />
+          <NavigationProperty Name="ingredientprices" Relationship="Self.fk_ingredientprice_countrycode1" FromRole="countrycode" ToRole="ingredientprice" />
+          <NavigationProperty Name="productprices" Relationship="Self.fk_productprice_countrycode" FromRole="countrycode" ToRole="productprice" />
+        </EntityType>
+        <EntityType Name="coupon">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="code" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startdate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="enddate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="amount" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="percentage" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="applyon" Type="Int32" />
+          <Property Name="description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="productcategoryid" Type="Int32" />
+          <Property Name="isfordeliverytypeonly" Type="Int32" />
+          <Property Name="pricetreshold" Type="Decimal" Precision="5" Scale="2" />
+          <NavigationProperty Name="deliverytype" Relationship="Self.fk_coupon_deliverytype" FromRole="coupon" ToRole="deliverytype" />
+          <NavigationProperty Name="productcategory" Relationship="Self.fk_coupon_productcategory" FromRole="coupon" ToRole="productcategory" />
+          <NavigationProperty Name="orders" Relationship="Self.fk_order_coupon" FromRole="coupon" ToRole="order" />
+        </EntityType>
+        <EntityType Name="deliverytype">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="coupons" Relationship="Self.fk_coupon_deliverytype" FromRole="deliverytype" ToRole="coupon" />
+          <NavigationProperty Name="orders" Relationship="Self.fk_order_deliverytype" FromRole="deliverytype" ToRole="order" />
+        </EntityType>
+        <EntityType Name="ingredient">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="isvegetarian" Type="Boolean" Nullable="false" />
+          <Property Name="isspicy" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ingredientprices" Relationship="Self.fk_ingredientprice_ingredient" FromRole="ingredient" ToRole="ingredientprice" />
+          <NavigationProperty Name="productingredients" Relationship="Self.fk_productingredient_ingredient" FromRole="ingredient" ToRole="productingredient" />
+          <NavigationProperty Name="productorderingredients" Relationship="Self.pizzaorderingredients_ingredients" FromRole="ingredient" ToRole="productorderingredient" />
+        </EntityType>
+        <EntityType Name="ingredientprice">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ingredientid" Type="Int32" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="startdate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="currency" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="vat" Type="Decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="countrycodeid" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="countrycode" Relationship="Self.fk_ingredientprice_countrycode1" FromRole="ingredientprice" ToRole="countrycode" />
+          <NavigationProperty Name="ingredient" Relationship="Self.fk_ingredientprice_ingredient" FromRole="ingredientprice" ToRole="ingredient" />
+        </EntityType>
+        <EntityType Name="order">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="datecreated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="datedelivered" Type="DateTime" Precision="3" />
+          <Property Name="phonenumber" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="clientname" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="userid" Type="Int32" />
+          <Property Name="couponid" Type="Int32" />
+          <Property Name="remark" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="deliverytypeid" Type="Int32" Nullable="false" />
+          <Property Name="addressid" Type="Int32" Nullable="false" />
+          <Property Name="storeid" Type="Int32" Nullable="false" />
+          <Property Name="preferredtime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="price" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="discount" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <NavigationProperty Name="address" Relationship="Self.fk_order_address" FromRole="order" ToRole="address" />
+          <NavigationProperty Name="coupon" Relationship="Self.fk_order_coupon" FromRole="order" ToRole="coupon" />
+          <NavigationProperty Name="deliverytype" Relationship="Self.fk_order_deliverytype" FromRole="order" ToRole="deliverytype" />
+          <NavigationProperty Name="user" Relationship="Self.fk_order_client" FromRole="order" ToRole="user" />
+          <NavigationProperty Name="store" Relationship="Self.fk_order_store" FromRole="order" ToRole="store" />
+          <NavigationProperty Name="orderlines" Relationship="Self.fk_productorder_order" FromRole="order" ToRole="orderline" />
+        </EntityType>
+        <EntityType Name="orderline">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="productid" Type="Int32" Nullable="false" />
+          <Property Name="orderid" Type="Int32" Nullable="false" />
+          <Property Name="bottomid" Type="Int32" />
+          <Property Name="amount" Type="Int32" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <NavigationProperty Name="bottom" Relationship="Self.fk_productorder_bottom" FromRole="orderline" ToRole="bottom" />
+          <NavigationProperty Name="order" Relationship="Self.fk_productorder_order" FromRole="orderline" ToRole="order" />
+          <NavigationProperty Name="product" Relationship="Self.fk_productorder_pizza" FromRole="orderline" ToRole="product" />
+          <NavigationProperty Name="productordersauces" Relationship="Self.fk_productordersauce_productorder" FromRole="orderline" ToRole="productordersauce" />
+          <NavigationProperty Name="productorderingredients" Relationship="Self.pizzaorderingredients_orderpizza" FromRole="orderline" ToRole="productorderingredient" />
+        </EntityType>
+        <EntityType Name="postalcode">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="postalcode1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="iseven" Type="Boolean" Nullable="false" />
+          <Property Name="startingnumber" Type="Int32" Nullable="false" />
+          <Property Name="endingnumber" Type="Int32" Nullable="false" />
+          <Property Name="city" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="street" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="townshipid" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="addresses" Relationship="Self.fk_address_postalcode" FromRole="postalcode" ToRole="address" />
+          <NavigationProperty Name="township" Relationship="Self.fk_postalcode_township" FromRole="postalcode" ToRole="township" />
+        </EntityType>
+        <EntityType Name="product">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="sauceid" Type="Int32" />
+          <Property Name="productcategory" Type="Int32" Nullable="false" />
+          <Property Name="isvegetarian" Type="Boolean" Nullable="false" />
+          <Property Name="isspicy" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="orderlines" Relationship="Self.fk_productorder_pizza" FromRole="product" ToRole="orderline" />
+          <NavigationProperty Name="sauce" Relationship="Self.fk_pizza_sauce" FromRole="product" ToRole="sauce" />
+          <NavigationProperty Name="productcategory1" Relationship="Self.fk_product_productsubcategory" FromRole="product" ToRole="productcategory" />
+          <NavigationProperty Name="productingredients" Relationship="Self.fk_productingredient_product" FromRole="product" ToRole="productingredient" />
+          <NavigationProperty Name="productprices" Relationship="Self.fk_productprice_product" FromRole="product" ToRole="productprice" />
+        </EntityType>
+        <EntityType Name="productcategory">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="parentproductcategoryid" Type="Int32" />
+          <NavigationProperty Name="coupons" Relationship="Self.fk_coupon_productcategory" FromRole="productcategory" ToRole="coupon" />
+          <NavigationProperty Name="products" Relationship="Self.fk_product_productsubcategory" FromRole="productcategory" ToRole="product" />
+          <NavigationProperty Name="productcategory1" Relationship="Self.fk_productcategory_productcategory" FromRole="productcategory" ToRole="productcategory1" />
+          <NavigationProperty Name="productcategory2" Relationship="Self.fk_productcategory_productcategory" FromRole="productcategory1" ToRole="productcategory" />
+        </EntityType>
+        <EntityType Name="productingredient">
+          <Key>
+            <PropertyRef Name="productid" />
+            <PropertyRef Name="ingredientid" />
+          </Key>
+          <Property Name="productid" Type="Int32" Nullable="false" />
+          <Property Name="ingredientid" Type="Int32" Nullable="false" />
+          <Property Name="amount" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ingredient" Relationship="Self.fk_productingredient_ingredient" FromRole="productingredient" ToRole="ingredient" />
+          <NavigationProperty Name="product" Relationship="Self.fk_productingredient_product" FromRole="productingredient" ToRole="product" />
+        </EntityType>
+        <EntityType Name="productorderingredient">
+          <Key>
+            <PropertyRef Name="productorderid" />
+            <PropertyRef Name="ingredientid" />
+          </Key>
+          <Property Name="productorderid" Type="Int32" Nullable="false" />
+          <Property Name="ingredientid" Type="Int32" Nullable="false" />
+          <Property Name="amount" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ingredient" Relationship="Self.pizzaorderingredients_ingredients" FromRole="productorderingredient" ToRole="ingredient" />
+          <NavigationProperty Name="orderline" Relationship="Self.pizzaorderingredients_orderpizza" FromRole="productorderingredient" ToRole="orderline" />
+        </EntityType>
+        <EntityType Name="productordersauce">
+          <Key>
+            <PropertyRef Name="productorderid" />
+            <PropertyRef Name="sauceid" />
+          </Key>
+          <Property Name="productorderid" Type="Int32" Nullable="false" />
+          <Property Name="sauceid" Type="Int32" Nullable="false" />
+          <Property Name="amount" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="orderline" Relationship="Self.fk_productordersauce_productorder" FromRole="productordersauce" ToRole="orderline" />
+          <NavigationProperty Name="sauce" Relationship="Self.fk_productordersauce_sauce" FromRole="productordersauce" ToRole="sauce" />
+        </EntityType>
+        <EntityType Name="productprice">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="productid" Type="Int32" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="currency" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="startdate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="vat" Type="Decimal" Precision="4" Scale="2" Nullable="false" />
+          <Property Name="countrycodeid" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="countrycode" Relationship="Self.fk_productprice_countrycode" FromRole="productprice" ToRole="countrycode" />
+          <NavigationProperty Name="product" Relationship="Self.fk_productprice_product" FromRole="productprice" ToRole="product" />
+        </EntityType>
+        <EntityType Name="sauce">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="products" Relationship="Self.fk_pizza_sauce" FromRole="sauce" ToRole="product" />
+          <NavigationProperty Name="productordersauces" Relationship="Self.fk_productordersauce_sauce" FromRole="sauce" ToRole="productordersauce" />
+        </EntityType>
+        <EntityType Name="store">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="addressid" Type="Int32" Nullable="false" />
+          <Property Name="phonenumber" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="address" Relationship="Self.fk_store_address" FromRole="store" ToRole="address" />
+          <NavigationProperty Name="orders" Relationship="Self.fk_order_store" FromRole="store" ToRole="order" />
+        </EntityType>
+        <EntityType Name="township">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="postalcodes" Relationship="Self.fk_postalcode_township" FromRole="township" ToRole="postalcode" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="addressid" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="address" Relationship="Self.fk_user_address" FromRole="user" ToRole="address" />
+          <NavigationProperty Name="orders" Relationship="Self.fk_order_client" FromRole="user" ToRole="order" />
+        </EntityType>
+        <Association Name="fk_address_postalcode">
+          <End Role="postalcode" Type="Self.postalcode" Multiplicity="1" />
+          <End Role="address" Type="Self.address" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="postalcode">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="address">
+              <PropertyRef Name="postalcodeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_address">
+          <End Role="address" Type="Self.address" Multiplicity="1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="address">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="addressid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_store_address">
+          <End Role="address" Type="Self.address" Multiplicity="1" />
+          <End Role="store" Type="Self.store" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="address">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="store">
+              <PropertyRef Name="addressid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_user_address">
+          <End Role="address" Type="Self.address" Multiplicity="1" />
+          <End Role="user" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="address">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="addressid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_bottomprice_bottom">
+          <End Role="bottom" Type="Self.bottom" Multiplicity="1" />
+          <End Role="bottomprice" Type="Self.bottomprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bottom">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="bottomprice">
+              <PropertyRef Name="bottomid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productorder_bottom">
+          <End Role="bottom" Type="Self.bottom" Multiplicity="0..1" />
+          <End Role="orderline" Type="Self.orderline" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bottom">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orderline">
+              <PropertyRef Name="bottomid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_bottomprice_countrycode1">
+          <End Role="countrycode" Type="Self.countrycode" Multiplicity="1" />
+          <End Role="bottomprice" Type="Self.bottomprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="countrycode">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="bottomprice">
+              <PropertyRef Name="countrycodeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ingredientprice_countrycode1">
+          <End Role="countrycode" Type="Self.countrycode" Multiplicity="1" />
+          <End Role="ingredientprice" Type="Self.ingredientprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="countrycode">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ingredientprice">
+              <PropertyRef Name="countrycodeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productprice_countrycode">
+          <End Role="countrycode" Type="Self.countrycode" Multiplicity="1" />
+          <End Role="productprice" Type="Self.productprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="countrycode">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productprice">
+              <PropertyRef Name="countrycodeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_coupon_deliverytype">
+          <End Role="deliverytype" Type="Self.deliverytype" Multiplicity="0..1" />
+          <End Role="coupon" Type="Self.coupon" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="deliverytype">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="coupon">
+              <PropertyRef Name="isfordeliverytypeonly" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_coupon_productcategory">
+          <End Role="productcategory" Type="Self.productcategory" Multiplicity="0..1" />
+          <End Role="coupon" Type="Self.coupon" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productcategory">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="coupon">
+              <PropertyRef Name="productcategoryid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_coupon">
+          <End Role="coupon" Type="Self.coupon" Multiplicity="0..1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="coupon">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="couponid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_deliverytype">
+          <End Role="deliverytype" Type="Self.deliverytype" Multiplicity="1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="deliverytype">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="deliverytypeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ingredientprice_ingredient">
+          <End Role="ingredient" Type="Self.ingredient" Multiplicity="1" />
+          <End Role="ingredientprice" Type="Self.ingredientprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ingredient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ingredientprice">
+              <PropertyRef Name="ingredientid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productingredient_ingredient">
+          <End Role="ingredient" Type="Self.ingredient" Multiplicity="1" />
+          <End Role="productingredient" Type="Self.productingredient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ingredient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productingredient">
+              <PropertyRef Name="ingredientid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="pizzaorderingredients_ingredients">
+          <End Role="ingredient" Type="Self.ingredient" Multiplicity="1" />
+          <End Role="productorderingredient" Type="Self.productorderingredient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ingredient">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productorderingredient">
+              <PropertyRef Name="ingredientid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_client">
+          <End Role="user" Type="Self.user" Multiplicity="0..1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="userid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_order_store">
+          <End Role="store" Type="Self.store" Multiplicity="1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="store">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="storeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productorder_order">
+          <End Role="order" Type="Self.order" Multiplicity="1" />
+          <End Role="orderline" Type="Self.orderline" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="order">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orderline">
+              <PropertyRef Name="orderid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productorder_pizza">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="orderline" Type="Self.orderline" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orderline">
+              <PropertyRef Name="productid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productordersauce_productorder">
+          <End Role="orderline" Type="Self.orderline" Multiplicity="1" />
+          <End Role="productordersauce" Type="Self.productordersauce" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="orderline">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productordersauce">
+              <PropertyRef Name="productorderid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="pizzaorderingredients_orderpizza">
+          <End Role="orderline" Type="Self.orderline" Multiplicity="1" />
+          <End Role="productorderingredient" Type="Self.productorderingredient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="orderline">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productorderingredient">
+              <PropertyRef Name="productorderid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_postalcode_township">
+          <End Role="township" Type="Self.township" Multiplicity="1" />
+          <End Role="postalcode" Type="Self.postalcode" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="township">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="postalcode">
+              <PropertyRef Name="townshipid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_pizza_sauce">
+          <End Role="sauce" Type="Self.sauce" Multiplicity="0..1" />
+          <End Role="product" Type="Self.product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sauce">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="product">
+              <PropertyRef Name="sauceid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_product_productsubcategory">
+          <End Role="productcategory" Type="Self.productcategory" Multiplicity="1" />
+          <End Role="product" Type="Self.product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productcategory">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="product">
+              <PropertyRef Name="productcategory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productingredient_product">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="productingredient" Type="Self.productingredient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productingredient">
+              <PropertyRef Name="productid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productprice_product">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="productprice" Type="Self.productprice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productprice">
+              <PropertyRef Name="productid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productcategory_productcategory">
+          <End Role="productcategory" Type="Self.productcategory" Multiplicity="0..1" />
+          <End Role="productcategory1" Type="Self.productcategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="productcategory">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productcategory1">
+              <PropertyRef Name="parentproductcategoryid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_productordersauce_sauce">
+          <End Role="sauce" Type="Self.sauce" Multiplicity="1" />
+          <End Role="productordersauce" Type="Self.productordersauce" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sauce">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="productordersauce">
+              <PropertyRef Name="sauceid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="dbi298845_prangersEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="addresses" EntityType="Self.address" />
+          <EntitySet Name="bottoms" EntityType="Self.bottom" />
+          <EntitySet Name="bottomprices" EntityType="Self.bottomprice" />
+          <EntitySet Name="countrycodes" EntityType="Self.countrycode" />
+          <EntitySet Name="coupons" EntityType="Self.coupon" />
+          <EntitySet Name="deliverytypes" EntityType="Self.deliverytype" />
+          <EntitySet Name="ingredients" EntityType="Self.ingredient" />
+          <EntitySet Name="ingredientprices" EntityType="Self.ingredientprice" />
+          <EntitySet Name="orders" EntityType="Self.order" />
+          <EntitySet Name="orderlines" EntityType="Self.orderline" />
+          <EntitySet Name="postalcodes" EntityType="Self.postalcode" />
+          <EntitySet Name="products" EntityType="Self.product" />
+          <EntitySet Name="productcategories" EntityType="Self.productcategory" />
+          <EntitySet Name="productingredients" EntityType="Self.productingredient" />
+          <EntitySet Name="productorderingredients" EntityType="Self.productorderingredient" />
+          <EntitySet Name="productordersauces" EntityType="Self.productordersauce" />
+          <EntitySet Name="productprices" EntityType="Self.productprice" />
+          <EntitySet Name="sauces" EntityType="Self.sauce" />
+          <EntitySet Name="stores" EntityType="Self.store" />
+          <EntitySet Name="townships" EntityType="Self.township" />
+          <EntitySet Name="users" EntityType="Self.user" />
+          <AssociationSet Name="fk_address_postalcode" Association="Self.fk_address_postalcode">
+            <End Role="postalcode" EntitySet="postalcodes" />
+            <End Role="address" EntitySet="addresses" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_address" Association="Self.fk_order_address">
+            <End Role="address" EntitySet="addresses" />
+            <End Role="order" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="fk_store_address" Association="Self.fk_store_address">
+            <End Role="address" EntitySet="addresses" />
+            <End Role="store" EntitySet="stores" />
+          </AssociationSet>
+          <AssociationSet Name="fk_user_address" Association="Self.fk_user_address">
+            <End Role="address" EntitySet="addresses" />
+            <End Role="user" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="fk_bottomprice_bottom" Association="Self.fk_bottomprice_bottom">
+            <End Role="bottom" EntitySet="bottoms" />
+            <End Role="bottomprice" EntitySet="bottomprices" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productorder_bottom" Association="Self.fk_productorder_bottom">
+            <End Role="bottom" EntitySet="bottoms" />
+            <End Role="orderline" EntitySet="orderlines" />
+          </AssociationSet>
+          <AssociationSet Name="fk_bottomprice_countrycode1" Association="Self.fk_bottomprice_countrycode1">
+            <End Role="countrycode" EntitySet="countrycodes" />
+            <End Role="bottomprice" EntitySet="bottomprices" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ingredientprice_countrycode1" Association="Self.fk_ingredientprice_countrycode1">
+            <End Role="countrycode" EntitySet="countrycodes" />
+            <End Role="ingredientprice" EntitySet="ingredientprices" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productprice_countrycode" Association="Self.fk_productprice_countrycode">
+            <End Role="countrycode" EntitySet="countrycodes" />
+            <End Role="productprice" EntitySet="productprices" />
+          </AssociationSet>
+          <AssociationSet Name="fk_coupon_deliverytype" Association="Self.fk_coupon_deliverytype">
+            <End Role="deliverytype" EntitySet="deliverytypes" />
+            <End Role="coupon" EntitySet="coupons" />
+          </AssociationSet>
+          <AssociationSet Name="fk_coupon_productcategory" Association="Self.fk_coupon_productcategory">
+            <End Role="productcategory" EntitySet="productcategories" />
+            <End Role="coupon" EntitySet="coupons" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_coupon" Association="Self.fk_order_coupon">
+            <End Role="coupon" EntitySet="coupons" />
+            <End Role="order" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_deliverytype" Association="Self.fk_order_deliverytype">
+            <End Role="deliverytype" EntitySet="deliverytypes" />
+            <End Role="order" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ingredientprice_ingredient" Association="Self.fk_ingredientprice_ingredient">
+            <End Role="ingredient" EntitySet="ingredients" />
+            <End Role="ingredientprice" EntitySet="ingredientprices" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productingredient_ingredient" Association="Self.fk_productingredient_ingredient">
+            <End Role="ingredient" EntitySet="ingredients" />
+            <End Role="productingredient" EntitySet="productingredients" />
+          </AssociationSet>
+          <AssociationSet Name="pizzaorderingredients_ingredients" Association="Self.pizzaorderingredients_ingredients">
+            <End Role="ingredient" EntitySet="ingredients" />
+            <End Role="productorderingredient" EntitySet="productorderingredients" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_client" Association="Self.fk_order_client">
+            <End Role="user" EntitySet="users" />
+            <End Role="order" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="fk_order_store" Association="Self.fk_order_store">
+            <End Role="store" EntitySet="stores" />
+            <End Role="order" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productorder_order" Association="Self.fk_productorder_order">
+            <End Role="order" EntitySet="orders" />
+            <End Role="orderline" EntitySet="orderlines" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productorder_pizza" Association="Self.fk_productorder_pizza">
+            <End Role="product" EntitySet="products" />
+            <End Role="orderline" EntitySet="orderlines" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productordersauce_productorder" Association="Self.fk_productordersauce_productorder">
+            <End Role="orderline" EntitySet="orderlines" />
+            <End Role="productordersauce" EntitySet="productordersauces" />
+          </AssociationSet>
+          <AssociationSet Name="pizzaorderingredients_orderpizza" Association="Self.pizzaorderingredients_orderpizza">
+            <End Role="orderline" EntitySet="orderlines" />
+            <End Role="productorderingredient" EntitySet="productorderingredients" />
+          </AssociationSet>
+          <AssociationSet Name="fk_postalcode_township" Association="Self.fk_postalcode_township">
+            <End Role="township" EntitySet="townships" />
+            <End Role="postalcode" EntitySet="postalcodes" />
+          </AssociationSet>
+          <AssociationSet Name="fk_pizza_sauce" Association="Self.fk_pizza_sauce">
+            <End Role="sauce" EntitySet="sauces" />
+            <End Role="product" EntitySet="products" />
+          </AssociationSet>
+          <AssociationSet Name="fk_product_productsubcategory" Association="Self.fk_product_productsubcategory">
+            <End Role="productcategory" EntitySet="productcategories" />
+            <End Role="product" EntitySet="products" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productingredient_product" Association="Self.fk_productingredient_product">
+            <End Role="product" EntitySet="products" />
+            <End Role="productingredient" EntitySet="productingredients" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productprice_product" Association="Self.fk_productprice_product">
+            <End Role="product" EntitySet="products" />
+            <End Role="productprice" EntitySet="productprices" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productcategory_productcategory" Association="Self.fk_productcategory_productcategory">
+            <End Role="productcategory" EntitySet="productcategories" />
+            <End Role="productcategory1" EntitySet="productcategories" />
+          </AssociationSet>
+          <AssociationSet Name="fk_productordersauce_sauce" Association="Self.fk_productordersauce_sauce">
+            <End Role="sauce" EntitySet="sauces" />
+            <End Role="productordersauce" EntitySet="productordersauces" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="dbi298845_prangersModelStoreContainer" CdmEntityContainer="dbi298845_prangersEntities">
+          <EntitySetMapping Name="addresses">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.address">
+              <MappingFragment StoreEntitySet="address">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="number" ColumnName="number" />
+                <ScalarProperty Name="countrycode" ColumnName="countrycode" />
+                <ScalarProperty Name="postalcodeid" ColumnName="postalcodeid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bottoms">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.bottom">
+              <MappingFragment StoreEntitySet="bottom">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="diameter" ColumnName="diameter" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bottomprices">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.bottomprice">
+              <MappingFragment StoreEntitySet="bottomprice">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="bottomid" ColumnName="bottomid" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="currency" ColumnName="currency" />
+                <ScalarProperty Name="startdate" ColumnName="startdate" />
+                <ScalarProperty Name="vat" ColumnName="vat" />
+                <ScalarProperty Name="countrycodeid" ColumnName="countrycodeid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="countrycodes">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.countrycode">
+              <MappingFragment StoreEntitySet="countrycode">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="code" ColumnName="code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="coupons">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.coupon">
+              <MappingFragment StoreEntitySet="coupon">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="startdate" ColumnName="startdate" />
+                <ScalarProperty Name="enddate" ColumnName="enddate" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+                <ScalarProperty Name="percentage" ColumnName="percentage" />
+                <ScalarProperty Name="applyon" ColumnName="applyon" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="productcategoryid" ColumnName="productcategoryid" />
+                <ScalarProperty Name="isfordeliverytypeonly" ColumnName="isfordeliverytypeonly" />
+                <ScalarProperty Name="pricetreshold" ColumnName="pricetreshold" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="deliverytypes">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.deliverytype">
+              <MappingFragment StoreEntitySet="deliverytype">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ingredients">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.ingredient">
+              <MappingFragment StoreEntitySet="ingredient">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="isvegetarian" ColumnName="isvegetarian" />
+                <ScalarProperty Name="isspicy" ColumnName="isspicy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ingredientprices">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.ingredientprice">
+              <MappingFragment StoreEntitySet="ingredientprice">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="ingredientid" ColumnName="ingredientid" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="startdate" ColumnName="startdate" />
+                <ScalarProperty Name="currency" ColumnName="currency" />
+                <ScalarProperty Name="vat" ColumnName="vat" />
+                <ScalarProperty Name="countrycodeid" ColumnName="countrycodeid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="orders">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.order">
+              <MappingFragment StoreEntitySet="order">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="datecreated" ColumnName="datecreated" />
+                <ScalarProperty Name="datedelivered" ColumnName="datedelivered" />
+                <ScalarProperty Name="phonenumber" ColumnName="phonenumber" />
+                <ScalarProperty Name="clientname" ColumnName="clientname" />
+                <ScalarProperty Name="userid" ColumnName="userid" />
+                <ScalarProperty Name="couponid" ColumnName="couponid" />
+                <ScalarProperty Name="remark" ColumnName="remark" />
+                <ScalarProperty Name="deliverytypeid" ColumnName="deliverytypeid" />
+                <ScalarProperty Name="addressid" ColumnName="addressid" />
+                <ScalarProperty Name="storeid" ColumnName="storeid" />
+                <ScalarProperty Name="preferredtime" ColumnName="preferredtime" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="discount" ColumnName="discount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="orderlines">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.orderline">
+              <MappingFragment StoreEntitySet="orderline">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="productid" ColumnName="productid" />
+                <ScalarProperty Name="orderid" ColumnName="orderid" />
+                <ScalarProperty Name="bottomid" ColumnName="bottomid" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+                <ScalarProperty Name="price" ColumnName="price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="postalcodes">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.postalcode">
+              <MappingFragment StoreEntitySet="postalcode">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="postalcode1" ColumnName="postalcode" />
+                <ScalarProperty Name="iseven" ColumnName="iseven" />
+                <ScalarProperty Name="startingnumber" ColumnName="startingnumber" />
+                <ScalarProperty Name="endingnumber" ColumnName="endingnumber" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="street" ColumnName="street" />
+                <ScalarProperty Name="townshipid" ColumnName="townshipid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="products">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.product">
+              <MappingFragment StoreEntitySet="product">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="sauceid" ColumnName="sauceid" />
+                <ScalarProperty Name="productcategory" ColumnName="productcategory" />
+                <ScalarProperty Name="isvegetarian" ColumnName="isvegetarian" />
+                <ScalarProperty Name="isspicy" ColumnName="isspicy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="productcategories">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.productcategory">
+              <MappingFragment StoreEntitySet="productcategory">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="parentproductcategoryid" ColumnName="parentproductcategoryid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="productingredients">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.productingredient">
+              <MappingFragment StoreEntitySet="productingredient">
+                <ScalarProperty Name="productid" ColumnName="productid" />
+                <ScalarProperty Name="ingredientid" ColumnName="ingredientid" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="productorderingredients">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.productorderingredient">
+              <MappingFragment StoreEntitySet="productorderingredient">
+                <ScalarProperty Name="productorderid" ColumnName="productorderid" />
+                <ScalarProperty Name="ingredientid" ColumnName="ingredientid" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="productordersauces">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.productordersauce">
+              <MappingFragment StoreEntitySet="productordersauce">
+                <ScalarProperty Name="productorderid" ColumnName="productorderid" />
+                <ScalarProperty Name="sauceid" ColumnName="sauceid" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="productprices">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.productprice">
+              <MappingFragment StoreEntitySet="productprice">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="productid" ColumnName="productid" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="currency" ColumnName="currency" />
+                <ScalarProperty Name="startdate" ColumnName="startdate" />
+                <ScalarProperty Name="vat" ColumnName="vat" />
+                <ScalarProperty Name="countrycodeid" ColumnName="countrycodeid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sauces">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.sauce">
+              <MappingFragment StoreEntitySet="sauce">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="stores">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.store">
+              <MappingFragment StoreEntitySet="store">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="addressid" ColumnName="addressid" />
+                <ScalarProperty Name="phonenumber" ColumnName="phonenumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="townships">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.township">
+              <MappingFragment StoreEntitySet="township">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.user">
+              <MappingFragment StoreEntitySet="user">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="addressid" ColumnName="addressid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

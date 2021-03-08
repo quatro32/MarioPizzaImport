@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="70227341c22f49c59128cd29a61df2fd" Name="Diagram1" ZoomLevel="34">
+        <EntityTypeShape EntityType="dbi298845_prangersModel.address" Width="1.5" PointX="3" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.bottom" Width="1.5" PointX="5.25" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.bottomprice" Width="1.5" PointX="12" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.countrycode" Width="1.5" PointX="9.75" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.coupon" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.deliverytype" Width="1.5" PointX="0.75" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.ingredient" Width="1.5" PointX="7.5" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.ingredientprice" Width="1.5" PointX="15" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.order" Width="1.5" PointX="5.25" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.orderline" Width="1.5" PointX="7.5" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.postalcode" Width="1.5" PointX="0.75" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.product" Width="1.5" PointX="5.25" PointY="22.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.productcategory" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.productingredient" Width="1.5" PointX="9.75" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.productorderingredient" Width="1.5" PointX="9.75" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.productordersauce" Width="1.5" PointX="9.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.productprice" Width="1.5" PointX="12" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.sauce" Width="1.5" PointX="3" PointY="23.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.store" Width="1.5" PointX="3" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.township" Width="1.5" PointX="1.5" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.user" Width="1.5" PointX="3" PointY="18.875" IsExpanded="true" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_address_postalcode" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_order_address" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_store_address" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_user_address" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_bottomprice_bottom" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productorder_bottom" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_bottomprice_countrycode1" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_ingredientprice_countrycode1" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productprice_countrycode" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_coupon_deliverytype" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_coupon_productcategory" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_order_coupon" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_order_deliverytype" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_ingredientprice_ingredient" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productingredient_ingredient" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.pizzaorderingredients_ingredients" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_order_client" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_order_store" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productorder_order" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productorder_pizza" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productordersauce_productorder" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.pizzaorderingredients_orderpizza" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_postalcode_township" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_pizza_sauce" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_product_productsubcategory" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productingredient_product" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productprice_product" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productcategory_productcategory" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_productordersauce_sauce" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
