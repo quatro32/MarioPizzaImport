@@ -22,12 +22,12 @@ namespace MarioPizzaImport
             Console.WriteLine(">>> Starting import of {0}.", typeof(T).Name);
 
             DateTime timeImportStart = DateTime.Now;
-            List<T> allImportedElement = this.Import(filePath);
+            int numberOfImportedElement = this.Import(filePath);
             DateTime timeImportEnd = DateTime.Now;
 
-            Console.WriteLine(">>> Imported {0} {1}s in {2} seconds.", allImportedElement.Count, typeof(T).Name, timeImportEnd.Subtract(timeImportStart).TotalSeconds);
+            Console.WriteLine(">>> Imported {0} {1}s in {2} seconds.", numberOfImportedElement, typeof(T).Name, timeImportEnd.Subtract(timeImportStart).TotalSeconds);
         }
 
-        abstract protected List<T> Import(string filePath);
+        abstract protected int Import(string filePath);
     }
 }

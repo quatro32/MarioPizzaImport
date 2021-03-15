@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace MarioPizzaImport
             OleDbConnectionStringBuilder connectionStringBuilder = new OleDbConnectionStringBuilder(@"Provider=Microsoft.JET.OLEDB.4.0;");
             connectionStringBuilder.DataSource = filePath;
 
-            SqlConnection sqlConnection = new SqlConnection("Server=mssql.fhict.local;initial catalog=dbi366191_wachtwoord;User Id=dbi366191_wachtwoord;Password=wachtwoord");
+            SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["dbi298845_prangersEntities"].ConnectionString);
             sqlConnection.Open();
 
             using (var postalCodeDatabaseConnection = new OleDbConnection(connectionStringBuilder.ConnectionString))
