@@ -15,9 +15,9 @@ namespace MarioPizzaImport
             var database = new dbi298845_prangersEntities();
             countrycode countrycode = getOrCreateDefaultCountryCode(database);
 
-            InsertExtraIngredients(@"C:\Users\shnva\Desktop\ingredienten.csv", database, countrycode);
-            InsertBottoms(@"C:\Users\shnva\Desktop\pizzabodems.csv", database, countrycode);
-            InsertProducts(@"C:\Users\shnva\Desktop\Overige producten.csv", database, countrycode);
+            InsertExtraIngredients(@"C:\Users\shnva\Desktop\resources\Extra Ingredienten.csv", database, countrycode);
+            InsertBottoms(@"C:\Users\shnva\Desktop\resources\pizzabodems.csv", database, countrycode);
+            InsertProducts(@"C:\Users\shnva\Desktop\resources\Overige producten.csv", database, countrycode);
           
 
            
@@ -184,7 +184,6 @@ namespace MarioPizzaImport
 
         static void InsertExtraIngredients(string path, dbi298845_prangersEntities db, countrycode countrycode)
         {
-
             using (StreamReader sr = new StreamReader(path))
             {
                 String line;
@@ -200,10 +199,9 @@ namespace MarioPizzaImport
                 
                         string[] parts = line.Split(';');
                         string name = parts[0];
-                        decimal amount = Convert.ToDecimal(parts[1]);
-           
+                        decimal price = Decimal.Parse(Regex.Match(parts[1], @"[0-9]+(\.[0-9]+)?").Value);
 
-                        // Controleren op het ingredient al voorkomt
+                        // Controleren of het ingredient al voorkomt
                         var ingredient = db.ingredients.SingleOrDefault(i => i.name == name);
                         if (ingredient == null)
                         {
@@ -212,19 +210,16 @@ namespace MarioPizzaImport
                                name = name
                             };
 
-
                             var ingredientprice = new ingredientprice()
                             {
                                 ingredient = ingredient,
                                 startdate = DateTime.Now,
                                 vat = 9.0m,
-                                price = amount,
+                                price = price,
                                 currency = "EUR",
                                 countrycode = countrycode
-
                             };
                         
-
                             db.ingredientprices.Add(ingredientprice);
                             db.SaveChanges();
                             Console.WriteLine("Ingredient added");
