@@ -69,6 +69,7 @@
     <Compile Include="deliverytype.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Importer.cs" />
     <Compile Include="ingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -99,6 +100,7 @@
     <Compile Include="postalcode.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="PostalCodeImporter.cs" />
     <Compile Include="product.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -125,6 +127,7 @@
     <Compile Include="store.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="StoreImporter.cs" />
     <Compile Include="township.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>

@@ -15,6 +15,12 @@ namespace MarioPizzaImport
             var database = new dbi298845_prangersEntities();
             countrycode countrycode = getOrCreateDefaultCountryCode(database);
 
+            PostalCodeImporter postalCodeImporter = new PostalCodeImporter(database, countrycode);
+            postalCodeImporter.Run(@"C:\Users\shnva\Desktop\Postcode tabel.mdb");
+
+            StoreImporter storeImporter = new StoreImporter(database, countrycode);
+            storeImporter.Run(@"C:\Users\shnva\Desktop\Winkels Mario.txt");
+
             InsertExtraIngredients(@"C:\Users\shnva\Desktop\ingredienten.csv", database, countrycode);
             InsertBottoms(@"C:\Users\shnva\Desktop\pizzabodems.csv", database, countrycode);
             InsertProducts(@"C:\Users\shnva\Desktop\Overige producten.csv", database, countrycode);
