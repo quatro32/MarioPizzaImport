@@ -10,13 +10,16 @@ namespace MarioPizzaImport
     {
         public PostalCodeImporter(dbi298845_prangersEntities database, countrycode countrycode) : base(database, countrycode) { }
 
-        protected override List<postalcode> Import(string filePath)
+        protected override int Import(string filePath)
         {
             List<township> allTownshipImported = new List<township>();
             List<postalcode> allPostalCodeImported = new List<postalcode>();
 
             OleDbConnectionStringBuilder connectionStringBuilder = new OleDbConnectionStringBuilder(@"Provider=Microsoft.JET.OLEDB.4.0;");
             connectionStringBuilder.DataSource = filePath;
+
+            SqlConnection sqlConnection = new SqlConnection("Server=mssql.fhict.local;initial catalog=dbi366191_wachtwoord;User Id=dbi366191_wachtwoord;Password=wachtwoord");
+            sqlConnection.Open();
 
             using (var postalCodeDatabaseConnection = new OleDbConnection(connectionStringBuilder.ConnectionString))
             {
@@ -28,13 +31,12 @@ namespace MarioPizzaImport
                 OleDbDataReader dataReader = cmd.ExecuteReader();
                 DateTime timeBatchStart = DateTime.Now;
     
-                using (var bulkInsert = new SqlBulkCopy("Server=mssql.fhict.local;initial catalog=dbi366191_wachtwoord;User Id=dbi366191_wachtwoord;Password=wachtwoord", SqlBulkCopyOptions.UseInternalTransaction))
+                using (var bulkInsert = new SqlBulkCopy(sqlConnection))
                 {
                     bulkInsert.DestinationTableName = "postalcode_import";
                     bulkInsert.EnableStreaming = true;
                     bulkInsert.BulkCopyTimeout = 300;
                     bulkInsert.NotifyAfter = 25000;
-                        
 
                     bulkInsert.ColumnMappings.Add("A13_POSTCODE", "postalcode");
                     bulkInsert.ColumnMappings.Add("A13_REEKSIND", "iseven");
@@ -52,27 +54,17 @@ namespace MarioPizzaImport
                     bulkInsert.WriteToServer(dataReader);
                 }
 
-                database.Dispose();
-                //databaseConnection.Close();
                 postalCodeDatabaseConnection.Close();
-
-                return allPostalCodeImported;
-
             }
 
-            // TODO: Run a stored procedure to transform the details and insert them in to the final table.
-            
-            return allPostalCodeImported;
-        }
+            SqlCommand sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            sqlCommand.CommandText = "ImportPostalCode";
+            sqlCommand.CommandTimeout = 600;
 
-        private static string FormatTownshipName(string townshipName)
-        {
-            List<string> allPart = townshipName.Trim().ToLower().Split(' ').ToList();
-            List<string> allPartUppercased = new List<string>();
-
-            allPart.ForEach(p => allPartUppercased.Add(p.Substring(0, 1).ToUpper() + p.Substring(1)));
-
-            return String.Join(" ", allPartUppercased);
+            sqlCommand.ExecuteNonQuery();
+           
+            return database.addresses.Count();
         }
     }
 }

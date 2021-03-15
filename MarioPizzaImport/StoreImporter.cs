@@ -10,7 +10,7 @@ namespace MarioPizzaImport
     {
         public StoreImporter(dbi298845_prangersEntities database, countrycode countrycode) : base(database, countrycode) { }
 
-        override protected List<store> Import(string filePath)
+        override protected int Import(string filePath)
         {
             List<store> allStore = new List<store>();
 
@@ -32,7 +32,14 @@ namespace MarioPizzaImport
                         else if (lineStoreInformation.Length == 0 && allLineStoreInformation.Count > 0)
                         {
                             // Line is empty, means we encounter a new store.
-                            allStore.Add(CreateStoreFromAllLine(allLineStoreInformation));
+                            try
+                            {
+                                allStore.Add(CreateStoreFromAllLine(allLineStoreInformation));
+                            }catch (Exception e)
+                            {
+                                // Ignored for now.
+                            }
+
                             allLineStoreInformation.Clear();
                         }
                     }
@@ -64,7 +71,7 @@ namespace MarioPizzaImport
 
             allStoreNew.ForEach(s => Console.WriteLine("Imported new store {0}", s.name));
 
-            return allStore;
+            return allStore.Count;
         }
 
         static void UpdateStoreExisting(store storeExisting, List<store> allStoreToImport)
@@ -125,22 +132,17 @@ namespace MarioPizzaImport
         postalcode GetOrCreatePostalCode(string street, string postalCodeString, string city)
         {
             string postalCodeFormatted = FormatPostalCode(postalCodeString);
-            postalcode postalcode = this.database.postalcodes.Where(p => p.postalcode1 == postalCodeFormatted).FirstOrDefault();
-            
+            postalcode postalcode = this.database.postalcodes.SingleOrDefault(p => p.postalcode1 == postalCodeFormatted);
+
             if (postalcode == null)
             {
-                postalcode = new postalcode();
-                postalcode.postalcode1 = postalCodeString;
-                postalcode.city = FormatCity(city);
-                postalcode.street = street;
-
-                // TODO: Winkels hebben niet standaard een gemeente. Als postcodes zijn geimporteerd kunnen we een error gooien als we de postcode en dus township niet kenne.
-                township township = new township();
-                township.name = FormatCity(city);
-
-                postalcode.township = township;
-            }  else if (postalcode.street != street) {
-                Console.WriteLine("Stret {0} in postalcode table isn't equal to {1} in import file.", postalcode.street, street);
+                Console.WriteLine("Postalcode {0} is not known", postalCodeString);
+                throw new Exception();
+            } else if (postalcode.street != street) {
+                if (LevenshteinDistance.Calculate(postalcode.street, street) > 4)
+                {
+                    Console.WriteLine("Street {0} in postalcode table isn't equal to {1} in import file.", postalcode.street, street);
+                }
             }
 
             return postalcode;
@@ -170,8 +172,6 @@ namespace MarioPizzaImport
 
                 if (Regex.IsMatch(postalCodeRepaired, regexPostalCode))
                 {
-                    Console.WriteLine("Repaired postcode. Imported {0} as {1}.", postalCode, postalCodeRepaired);
-
                     return postalCodeRepaired;
                 }
                 else
@@ -202,6 +202,49 @@ namespace MarioPizzaImport
                 Console.WriteLine("Country Code {0} is invalid and could not be repaired.", countryCode);
 
                 throw new Exception();
+            }
+        }
+
+        public static class LevenshteinDistance
+        {
+            /// <summary>
+            ///     Calculate the difference between 2 strings using the Levenshtein distance algorithm
+            /// </summary>
+            /// <param name="source1">First string</param>
+            /// <param name="source2">Second string</param>
+            /// <returns></returns>
+            public static int Calculate(string source1, string source2) //O(n*m)
+            {
+                var source1Length = source1.Length;
+                var source2Length = source2.Length;
+
+                var matrix = new int[source1Length + 1, source2Length + 1];
+
+                // First calculation, if one entry is empty return full length
+                if (source1Length == 0)
+                    return source2Length;
+
+                if (source2Length == 0)
+                    return source1Length;
+
+                // Initialization of matrix with row size source1Length and columns size source2Length
+                for (var i = 0; i <= source1Length; matrix[i, 0] = i++) { }
+                for (var j = 0; j <= source2Length; matrix[0, j] = j++) { }
+
+                // Calculate rows and collumns distances
+                for (var i = 1; i <= source1Length; i++)
+                {
+                    for (var j = 1; j <= source2Length; j++)
+                    {
+                        var cost = (source2[j - 1] == source1[i - 1]) ? 0 : 1;
+
+                        matrix[i, j] = Math.Min(
+                            Math.Min(matrix[i - 1, j] + 1, matrix[i, j - 1] + 1),
+                            matrix[i - 1, j - 1] + cost);
+                    }
+                }
+                // return result
+                return matrix[source1Length, source2Length];
             }
         }
     }
