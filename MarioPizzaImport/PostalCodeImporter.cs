@@ -13,9 +13,6 @@ namespace MarioPizzaImport
 
         protected override int Import(string filePath)
         {
-            List<township> allTownshipImported = new List<township>();
-            List<postalcode> allPostalCodeImported = new List<postalcode>();
-
             OleDbConnectionStringBuilder connectionStringBuilder = new OleDbConnectionStringBuilder(@"Provider=Microsoft.JET.OLEDB.4.0;");
             connectionStringBuilder.DataSource = filePath;
 
