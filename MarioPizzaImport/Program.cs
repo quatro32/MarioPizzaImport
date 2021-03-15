@@ -15,11 +15,9 @@ namespace MarioPizzaImport
             var database = new dbi298845_prangersEntities();
             countrycode countrycode = getOrCreateDefaultCountryCode(database);
 
-            InsertExtraIngredients(@"C:\Users\shnva\Desktop\resources\Extra Ingredienten.csv", database, countrycode);
-            InsertBottoms(@"C:\Users\shnva\Desktop\resources\pizzabodems.csv", database, countrycode);
-            InsertProducts(@"C:\Users\shnva\Desktop\resources\Overige producten.csv", database, countrycode);
-          
-
+            InsertExtraIngredients(@"C:\Users\shnva\Desktop\ingredienten.csv", database, countrycode);
+            InsertBottoms(@"C:\Users\shnva\Desktop\pizzabodems.csv", database, countrycode);
+            InsertProducts(@"C:\Users\shnva\Desktop\Overige producten.csv", database, countrycode);
            
             Console.WriteLine("Done...");
             Console.ReadKey();
@@ -73,8 +71,7 @@ namespace MarioPizzaImport
                     {
                         product = new product();
                         product.name = name;
-                        // We are missing a description field on product.
-                        //product.description = description;
+                        product.description = description;
                         product.isspicy = spicy;
                         product.isvegetarian = vegetarian;
                         product.productcategory = subcategory.id;
@@ -91,8 +88,7 @@ namespace MarioPizzaImport
                     // If the product already exists, update every field except name, this includes creating a new price.
                     else
                     {
-                        // We are missing a description field on product.
-                        //product.description = description;
+                        product.description = description;
                         product.isspicy = spicy;
                         product.isvegetarian = vegetarian;
                         product.productcategory = subcategory.id;
@@ -184,6 +180,58 @@ namespace MarioPizzaImport
 
         static void InsertExtraIngredients(string path, dbi298845_prangersEntities db, countrycode countrycode)
         {
+
+            using (StreamReader sr = new StreamReader(path))
+            {
+                String line;
+                bool isHeaderLine = true;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (isHeaderLine)
+                    {
+                        isHeaderLine = false;
+                    }
+                    else
+                    {
+                
+                        string[] parts = line.Split(';');
+                        string name = parts[0];
+                        decimal amount = Convert.ToDecimal(parts[1]);
+           
+
+                        // Controleren op het ingredient al voorkomt
+                        var ingredient = db.ingredients.SingleOrDefault(i => i.name == name);
+                        if (ingredient == null)
+                        {
+                            ingredient = new ingredient()
+                            {
+                               name = name
+                            };
+
+
+                            var ingredientprice = new ingredientprice()
+                            {
+                                ingredient = ingredient,
+                                startdate = DateTime.Now,
+                                vat = 9.0m,
+                                price = amount,
+                                currency = "EUR",
+                                countrycode = countrycode
+
+                            };
+                        
+
+                            db.ingredientprices.Add(ingredientprice);
+                            db.SaveChanges();
+                            Console.WriteLine("Ingredient added");
+                        }
+                    }
+                }
+            }
+        }
+
+        static void InsertExtraIngredients(string path, dbi298845_prangersEntities db, countrycode countrycode)
+        {
             using (StreamReader sr = new StreamReader(path))
             {
                 String line;
@@ -228,7 +276,6 @@ namespace MarioPizzaImport
                 }
             }
         }
-
         
         private static countrycode getOrCreateDefaultCountryCode(dbi298845_prangersEntities db)
         {
