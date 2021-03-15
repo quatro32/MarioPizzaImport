@@ -18,8 +18,6 @@ namespace MarioPizzaImport
             InsertExtraIngredients(@"C:\Users\shnva\Desktop\ingredienten.csv", database, countrycode);
             InsertBottoms(@"C:\Users\shnva\Desktop\pizzabodems.csv", database, countrycode);
             InsertProducts(@"C:\Users\shnva\Desktop\Overige producten.csv", database, countrycode);
-          
-
            
             Console.WriteLine("Done...");
             Console.ReadKey();
@@ -73,8 +71,7 @@ namespace MarioPizzaImport
                     {
                         product = new product();
                         product.name = name;
-                        // We are missing a description field on product.
-                        //product.description = description;
+                        product.description = description;
                         product.isspicy = spicy;
                         product.isvegetarian = vegetarian;
                         product.productcategory = subcategory.id;
@@ -91,8 +88,7 @@ namespace MarioPizzaImport
                     // If the product already exists, update every field except name, this includes creating a new price.
                     else
                     {
-                        // We are missing a description field on product.
-                        //product.description = description;
+                        product.description = description;
                         product.isspicy = spicy;
                         product.isvegetarian = vegetarian;
                         product.productcategory = subcategory.id;
