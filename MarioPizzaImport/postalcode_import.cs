@@ -15,27 +15,22 @@ namespace MarioPizzaImport
 using System;
     using System.Collections.Generic;
     
-public partial class township
+public partial class postalcode_import
 {
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public township()
-    {
+    public string postalcode { get; set; }
 
-        this.postalcodes = new HashSet<postalcode>();
+    public decimal iseven { get; set; }
 
-    }
+    public decimal startingnumber { get; set; }
 
+    public decimal endingnumber { get; set; }
 
-    public int id { get; set; }
+    public string city { get; set; }
 
-    public string name { get; set; }
+    public string street { get; set; }
 
-
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<postalcode> postalcodes { get; set; }
+    public string township { get; set; }
 
 }
 

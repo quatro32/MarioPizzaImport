@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -76,6 +77,10 @@
     <Compile Include="ingredientprice.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="mapping.cs">
+      <DependentUpon>MarioPizzaModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MappingParser.cs" />
     <Compile Include="MarioPizzaModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -101,6 +106,9 @@
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PostalCodeImporter.cs" />
+    <Compile Include="postalcode_import.cs">
+      <DependentUpon>MarioPizzaModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="product.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>

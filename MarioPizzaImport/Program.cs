@@ -15,6 +15,14 @@ namespace MarioPizzaImport
             var database = new dbi298845_prangersEntities();
             countrycode countrycode = getOrCreateDefaultCountryCode(database);
 
+            /**
+             * Once all other changes are merged, we need to make this into a proper console application with multiple commands. Since the mapping should
+             * be executed after importing products and ingredients.
+             * Then the records in the mapping table need to be mapped by hand before orders are imported.
+             */
+            MappingParser mappingParser = new MappingParser(database);
+            mappingParser.ParseMappingFromOrderFile(@"C:\Users\shnva\Desktop\MarioOrderData01_10000.csv");
+
             PostalCodeImporter postalCodeImporter = new PostalCodeImporter(database, countrycode);
             postalCodeImporter.Run(@"C:\Users\shnva\Desktop\Postcode tabel.mdb");
 
@@ -178,58 +186,6 @@ namespace MarioPizzaImport
                             db.bottomprices.Add(bottomprice);
                             db.SaveChanges();
                             Console.WriteLine("1 bottom and bottomprice added...");
-                        }
-                    }
-                }
-            }
-        }
-
-        static void InsertExtraIngredients(string path, dbi298845_prangersEntities db, countrycode countrycode)
-        {
-
-            using (StreamReader sr = new StreamReader(path))
-            {
-                String line;
-                bool isHeaderLine = true;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    if (isHeaderLine)
-                    {
-                        isHeaderLine = false;
-                    }
-                    else
-                    {
-                
-                        string[] parts = line.Split(';');
-                        string name = parts[0];
-                        decimal amount = Convert.ToDecimal(parts[1]);
-           
-
-                        // Controleren op het ingredient al voorkomt
-                        var ingredient = db.ingredients.SingleOrDefault(i => i.name == name);
-                        if (ingredient == null)
-                        {
-                            ingredient = new ingredient()
-                            {
-                               name = name
-                            };
-
-
-                            var ingredientprice = new ingredientprice()
-                            {
-                                ingredient = ingredient,
-                                startdate = DateTime.Now,
-                                vat = 9.0m,
-                                price = amount,
-                                currency = "EUR",
-                                countrycode = countrycode
-
-                            };
-                        
-
-                            db.ingredientprices.Add(ingredientprice);
-                            db.SaveChanges();
-                            Console.WriteLine("Ingredient added");
                         }
                     }
                 }

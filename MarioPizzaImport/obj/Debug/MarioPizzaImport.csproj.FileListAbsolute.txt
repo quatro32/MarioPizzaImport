@@ -10,3 +10,7 @@ C:\Users\shnva\source\repos\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPiz
 C:\Users\shnva\source\repos\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csproj.CopyComplete
 C:\Users\shnva\source\repos\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.exe
 C:\Users\shnva\source\repos\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.pdb
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csprojAssemblyReference.cache
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csproj.CoreCompileInputs.cache
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.exe
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.pdb
