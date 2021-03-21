@@ -8,7 +8,6 @@ namespace MarioPizzaImport
 {
     public class StoreImporter : Importer<store>
     {
-        // TODO: Would be nice to use the mapping table for this.
         private static Dictionary<string, string> mapCityToAlternativeName = new Dictionary<string, string>()
         {
             { "den bosch", "'s-Hertogenbosch" },
@@ -49,7 +48,7 @@ namespace MarioPizzaImport
                                 allStore.Add(CreateStoreFromAllLine(allLineStoreInformation));
                             }catch (Exception e)
                             {
-                                Console.WriteLine("Couldn't import store {0}", allLineStoreInformation[0]);
+                                Logger.Instance.LogError(this.GetFilePath(), string.Format("Couldn't import store {0}", allLineStoreInformation[0]));
                             }
 
                             allLineStoreInformation.Clear();
@@ -116,7 +115,8 @@ namespace MarioPizzaImport
         {
             if (!allLineStoreInformation.Count.Equals(7))
             {
-                Console.WriteLine("Store {0} has incomplete details.", allLineStoreInformation[0]);
+                Logger.Instance.LogError(this.GetFilePath(), string.Format("Store {0} has incomplete details.", allLineStoreInformation[0]));
+                throw new Exception("Store details invalid.");
             }
 
             store store = new store();
@@ -164,7 +164,7 @@ namespace MarioPizzaImport
             return String.Join(" ", allPartUppercased);
         }
 
-        private static string FormatPostalCode(string postalCode)
+        private string FormatPostalCode(string postalCode)
         {
             string regexPostalCode = "[0-9]{4}[A-Z]{2}";
 
@@ -182,7 +182,7 @@ namespace MarioPizzaImport
                 }
                 else
                 {
-                    Console.WriteLine("Postal Code {0} is invalid and could not be repaired.", postalCode);
+                    Logger.Instance.LogError(this.GetFilePath(), string.Format("Postal Code {0} is invalid and could not be repaired.", postalCode));
 
                     throw new Exception();
                 }
@@ -195,7 +195,7 @@ namespace MarioPizzaImport
             return Regex.Replace(phoneNumber, regexPhoneNumber, "");
         }
 
-        private static string ValidateCountryCode(string countryCode)
+        private string ValidateCountryCode(string countryCode)
         {
             string regexPostalCode = "[A-Z]{2}";
 
@@ -205,7 +205,7 @@ namespace MarioPizzaImport
             }
             else
             {
-                Console.WriteLine("Country Code {0} is invalid and could not be repaired.", countryCode);
+                Logger.Instance.LogError(this.GetFilePath(), string.Format("Country Code {0} is invalid and could not be repaired.", countryCode));
 
                 throw new Exception();
             }

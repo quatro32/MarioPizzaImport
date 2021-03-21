@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Data.SqlClient;
 
 namespace MarioPizzaImport
@@ -40,6 +41,8 @@ namespace MarioPizzaImport
 
         private void SaveLog(string type, string fileName, string errorString)
         {
+            Console.WriteLine("[{0}] {1}", type, errorString);
+
             SqlCommand command = this.connection.CreateCommand();
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.CommandText = "SaveLog";
