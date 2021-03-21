@@ -15,69 +15,18 @@ namespace MarioPizzaImport
             var database = new dbi298845_prangersEntities();
             countrycode countrycode = getOrCreateDefaultCountryCode(database);
 
-            // MatchStreets(@"C:\Users\Jos\Downloads\MarioData\MarioOrderData01_10000.csv", database);
-
-            //PostalCodeImporter postalCodeImporter = new PostalCodeImporter(database, countrycode);
-            //postalCodeImporter.Run(@"C:\Users\Jos\Downloads\MarioData\Postcode tabel.mdb");
+            PostalCodeImporter postalCodeImporter = new PostalCodeImporter(database, countrycode);
+            postalCodeImporter.Run(@"C:\Users\Jos\Downloads\MarioData\Postcode tabel.mdb");
 
             StoreImporter storeImporter = new StoreImporter(database, countrycode);
-            storeImporter.Run(@"C:\Users\Jos\Downloads\MarioData\Winkels Mario.txt");
+            storeImporter.Run(@"C:\Users\shnva\Desktop\Winkels Mario.txt");
 
-            ////InsertExtraIngredients(@"C:\Users\shnva\Desktop\ingredienten.csv", database, countrycode);
-            //InsertBottoms(@"C:\Users\shnva\Desktop\pizzabodems.csv", database, countrycode);
-            //InsertProducts(@"C:\Users\shnva\Desktop\Overige producten.csv", database, countrycode);
+            InsertExtraIngredients(@"C:\Users\shnva\Desktop\ingredienten.csv", database, countrycode);
+            InsertBottoms(@"C:\Users\shnva\Desktop\pizzabodems.csv", database, countrycode);
+            InsertProducts(@"C:\Users\shnva\Desktop\Overige producten.csv", database, countrycode);
            
             Console.WriteLine("Done...");
             Console.ReadKey();
-        }
-
-        private static void MatchStreets(string filePath, dbi298845_prangersEntities database)
-        {
-            List<postalcode> allPostalCodeWithOrder = new List<postalcode>();
-            List<string> allStreetWithoutMatch = new List<string>();
-
-            int current = 0;
-
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                string lineCurrent = null;
-
-                while ((lineCurrent = reader.ReadLine()) != null)
-                {
-                    string[] allLinePart = lineCurrent.Split(';');
-
-                    if (allLinePart[0].Length > 0 && allLinePart.Length > 5)
-                    {
-                        string streetWithHouseNumber = allLinePart[4];
-                        string city = allLinePart[5];
-
-                        postalcode postalcode = PostalCodeImporter.FindPostalCodeByStreetAndCity(streetWithHouseNumber, city, database);
-
-                        if (postalcode == null)
-                        {
-                            allStreetWithoutMatch.Add(streetWithHouseNumber);
-                        }
-                        else
-                        {
-                            //Console.WriteLine("Found match");
-                            allPostalCodeWithOrder.Add(postalcode);
-                        }
-
-                        current += 1;
-
-                        if (current % 1000 == 0)
-                        {
-                            //Console.WriteLine("Did another 1000");
-
-                            Console.WriteLine("Got {0} matches", allPostalCodeWithOrder.Count);
-                            Console.WriteLine("Got {0} failures", allStreetWithoutMatch.Count);
-                        } 
-                    }
-                }
-            }
-
-            Console.WriteLine("Got {0} matches", allPostalCodeWithOrder.Count);
-            Console.WriteLine("Got {0} failures", allStreetWithoutMatch.Count);
         }
 
         static void InsertBottoms(string path, dbi298845_prangersEntities db, countrycode countrycode)
@@ -132,7 +81,109 @@ namespace MarioPizzaImport
                 }
             }
         }
+        private static void InsertProducts(string path, dbi298845_prangersEntities database, countrycode countrycode)
+        {
+            using (StreamReader sr = new StreamReader(path))
+            {
+                // Skip the header line.
+                sr.ReadLine();
+                String line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    //categorie;subcategorie;productnaam;productomschrijving;prijs;spicy;vegetarisch;available;amount;name
+                    string[] parts = line.Split(';');
+                    string categoryName = parts[0];
+                    string subcategoryName = parts[1];
+                    string name = parts[2];
+                    string description = parts[3];
+                    Decimal price = Decimal.Parse(Regex.Replace(parts[4], "[^0-9.]", ""));
+                    bool spicy = parts[5].ToUpper() == "JA";
+                    bool vegetarian = parts[6].ToUpper() == "JA";
 
+                    int ingredientAmount = Convert.ToInt32(parts[8]);
+                    string ingredientName = parts[9];
+
+                    // Retrieve or create the top level category
+                    productcategory category = database.productcategories.SingleOrDefault(i => i.name == categoryName);
+                    if (category == null)
+                    {
+                        category = new productcategory();
+                        category.name = categoryName;
+                        database.productcategories.Add(category);
+                        Console.WriteLine("Added new top level category called {0}", categoryName);
+                    }
+
+                    // Retrieve or create the subcategory
+                    productcategory subcategory = database.productcategories.SingleOrDefault(i => i.name == subcategoryName && i.parentproductcategoryid == category.id);
+                    if (subcategory == null)
+                    {
+                        subcategory = new productcategory();
+                        subcategory.name = subcategoryName;
+                        subcategory.parentproductcategoryid = category.id;
+                        database.productcategories.Add(subcategory);
+                        Console.WriteLine("Added new child to category {0} called {1}", categoryName, subcategoryName);
+                    }
+
+                    product product = database.products.SingleOrDefault(i => i.name == name);
+                    if (product == null)
+                    {
+                        product = new product();
+                        product.name = name;
+                        product.description = description;
+                        product.isspicy = spicy;
+                        product.isvegetarian = vegetarian;
+                        product.productcategory = subcategory.id;
+                        database.products.Add(product);
+
+                        // Create a productprice for the current price.
+                        productprice productprice = new productprice();
+                        productprice.product = product;
+                        productprice.price = price;
+                        productprice.startdate = DateTime.Now;
+                        database.productprices.Add(productprice);
+                        Console.WriteLine("New product {0} created", name);
+                    }
+                    // If the product already exists, update every field except name, this includes creating a new price.
+                    else
+                    {
+                        product.description = description;
+                        product.isspicy = spicy;
+                        product.isvegetarian = vegetarian;
+                        product.productcategory = subcategory.id;
+
+                        // Create a productprice for the current price.
+                        productprice productprice = new productprice();
+                        productprice.product = product;
+                        productprice.price = price;
+                        productprice.startdate = DateTime.Now;
+                        database.productprices.Add(productprice);
+                        Console.WriteLine("Updating existing product {0}", name);
+                    }
+
+                    ingredient ingredient = database.ingredients.SingleOrDefault(i => i.name == ingredientName);
+
+
+                    if (ingredient == null)
+                    {
+                        Console.WriteLine("Cannot resove {0} from ingredients", ingredient);
+
+                    }
+                    else
+                    {
+
+                        var productingredient = new productingredient();
+                        productingredient.ingredient = ingredient;
+                        productingredient.product = product;
+                        productingredient.amount = ingredientAmount;
+                        Console.WriteLine("Added {0} to {1}", ingredient.name, product.name);
+                        database.productingredients.Add(productingredient);
+                    }
+                    database.SaveChanges();
+                }
+            }
+
+        }
+    
         static void InsertExtraIngredients(string path, dbi298845_prangersEntities db, countrycode countrycode)
         {
 
