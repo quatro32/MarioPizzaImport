@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="70227341c22f49c59128cd29a61df2fd" Name="Diagram1" ZoomLevel="34">
+      <Diagram DiagramId="70227341c22f49c59128cd29a61df2fd" Name="Diagram1" ZoomLevel="74">
         <EntityTypeShape EntityType="dbi298845_prangersModel.address" Width="1.5" PointX="3" PointY="8.375" IsExpanded="true" />
         <EntityTypeShape EntityType="dbi298845_prangersModel.bottom" Width="1.5" PointX="5.25" PointY="8.625" IsExpanded="true" />
         <EntityTypeShape EntityType="dbi298845_prangersModel.bottomprice" Width="1.5" PointX="12" PointY="9.75" IsExpanded="true" />
@@ -55,6 +55,7 @@
         <AssociationConnector Association="dbi298845_prangersModel.fk_productprice_product" ManuallyRouted="false" />
         <AssociationConnector Association="dbi298845_prangersModel.fk_productcategory_productcategory" ManuallyRouted="false" />
         <AssociationConnector Association="dbi298845_prangersModel.fk_productordersauce_sauce" ManuallyRouted="false" />
+        <AssociationConnector Association="dbi298845_prangersModel.fk_store_township" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

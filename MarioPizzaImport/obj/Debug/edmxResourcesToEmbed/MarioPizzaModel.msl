@@ -4,6 +4,7 @@
     <EntitySetMapping Name="addresses">
       <EntityTypeMapping TypeName="dbi298845_prangersModel.address">
         <MappingFragment StoreEntitySet="address">
+          <ScalarProperty Name="street" ColumnName="street" />
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="number" ColumnName="number" />
           <ScalarProperty Name="countrycode" ColumnName="countrycode" />
@@ -207,6 +208,7 @@
     <EntitySetMapping Name="stores">
       <EntityTypeMapping TypeName="dbi298845_prangersModel.store">
         <MappingFragment StoreEntitySet="store">
+          <ScalarProperty Name="townshipid" ColumnName="townshipid" />
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="addressid" ColumnName="addressid" />
@@ -225,10 +227,10 @@
     <EntitySetMapping Name="users">
       <EntityTypeMapping TypeName="dbi298845_prangersModel.user">
         <MappingFragment StoreEntitySet="user">
+          <ScalarProperty Name="password" ColumnName="password" />
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="email" ColumnName="email" />
-          <ScalarProperty Name="password" ColumnName="password" />
           <ScalarProperty Name="addressid" ColumnName="addressid" />
         </MappingFragment>
       </EntityTypeMapping>

@@ -24,9 +24,11 @@ namespace MarioPizzaImport
         public string name { get; set; }
         public int addressid { get; set; }
         public string phonenumber { get; set; }
+        public int townshipid { get; set; }
     
         public virtual address address { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<order> orders { get; set; }
+        public virtual township township { get; set; }
     }
 }

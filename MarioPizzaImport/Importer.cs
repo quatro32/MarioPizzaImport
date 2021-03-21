@@ -10,6 +10,7 @@ namespace MarioPizzaImport
     {
         protected dbi298845_prangersEntities database;
         protected countrycode countrycode;
+        protected string filePath;
 
         public Importer(dbi298845_prangersEntities database, countrycode countrycode)
         {
@@ -19,6 +20,8 @@ namespace MarioPizzaImport
 
         public void Run(string filePath)
         {
+            this.filePath = filePath;
+
             Console.WriteLine(">>> Starting import of {0}.", typeof(T).Name);
 
             DateTime timeImportStart = DateTime.Now;
@@ -29,5 +32,10 @@ namespace MarioPizzaImport
         }
 
         abstract protected int Import(string filePath);
+
+        protected string GetFilePath()
+        {
+            return this.filePath;
+        }
     }
 }
