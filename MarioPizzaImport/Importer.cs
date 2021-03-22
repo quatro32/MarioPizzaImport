@@ -37,5 +37,25 @@ namespace MarioPizzaImport
         {
             return this.filePath;
         }
+
+        protected product GetMappedProduct(string productName)
+        {
+            mapping mapping = database.mappings.SingleOrDefault(i => i.originalname == productName && !i.isingredient && i.mappedto != null);
+            if(mapping != null)
+            {
+                return database.products.SingleOrDefault(i => i.name == mapping.mappedto);
+            }
+            return null;
+        }
+
+        protected ingredient GetMappedIngredient(string ingredientName)
+        {
+            mapping mapping = database.mappings.SingleOrDefault(i => i.originalname == ingredientName && i.isingredient && i.mappedto != null);
+            if (mapping != null)
+            {
+                return database.ingredients.SingleOrDefault(i => i.name == mapping.mappedto);
+            }
+            return null;
+        }
     }
 }

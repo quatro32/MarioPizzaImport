@@ -36,7 +36,11 @@ namespace MarioPizzaImport
 
                     if (allLineIngredientInformation.Count != 0)
                     {
-                        allIngredients.Add(CreateIngredientFromAllLine(allLineIngredientInformation));
+                        productingredient productIngredient = CreateIngredientFromAllLine(allLineIngredientInformation);
+                        if (productIngredient != null)
+                        {
+                            allIngredients.Add(productIngredient);
+                        }
                         allLineIngredientInformation.Clear();
                     }
                 }
@@ -65,18 +69,37 @@ namespace MarioPizzaImport
             string productName = allLineIngredientInformation[2];
             string ingredientName = allLineIngredientInformation[10];
 
-            ingredient ingredient = database.ingredients.Where(s => s.name == ingredientName).First();
+            product product = database.products.SingleOrDefault(s => s.name == productName);
+            ingredient ingredient = database.ingredients.SingleOrDefault(s => s.name == ingredientName);
+
+            if (product == null)
+            {
+                product = GetMappedProduct(productName);
+                if(product == null)
+                {
+                    Logger.Instance.LogError(filePath, "Could not find product named " + ingredientName);
+                    return null;
+                }
+            }
+
+            if (ingredient == null)
+            {
+                ingredient = GetMappedIngredient(ingredientName);
+                if (ingredient == null)
+                {
+                    Logger.Instance.LogError(filePath, String.Format("Could not find ingredient named {0} for product {1}", ingredientName, productName));
+                    return null;
+                }
+            }
 
             productingredient productingredient = new productingredient();
 
-            productingredient.product = database.products.Where(s => s.name == productName).First();
+            productingredient.product = product;
             productingredient.amount = Convert.ToInt32(allLineIngredientInformation[9]);
+
             productingredient.ingredient = ingredient;
 
             return productingredient;
-            
         }
-
-        
     }
 }
