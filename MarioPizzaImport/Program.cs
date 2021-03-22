@@ -129,8 +129,13 @@ namespace MarioPizzaImport
             StoreImporter storeImporter = new StoreImporter(database, countrycode);
             storeImporter.Run(@"C:\Users\shnva\Desktop\Winkels Mario.txt");
 
-            //Import single ingredients.
             InsertExtraIngredients(@"C:\Users\Peter\Downloads\MarioData\Extra ingredienten.csv", database, countrycode);
+
+            BottomImporter bottomImporter = new BottomImporter(database, countrycode);
+            bottomImporter.Run(@"C:\Users\Peter\Downloads\MarioData\pizzabodems.csv");
+
+            ProductImporter productImporter = new ProductImporter(database, countrycode);
+            productImporter.Run(@"C:\Users\Peter\Downloads\MarioData\overige producten.csv");
 
             //Import the relation between pizza and ingredients.
             IngredientImporter ingredientImporter = new IngredientImporter(database, countrycode);
