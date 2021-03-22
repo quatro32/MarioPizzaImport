@@ -143,7 +143,7 @@ namespace MarioPizzaImport
              * Then the records in the mapping table need to be mapped by hand before orders are imported.
              */
             MappingParser mappingParser = new MappingParser(database);
-            mappingParser.ParseMappingFromOrderFile(@"C:\Users\Peter\Downloads\MarioData\MarioOrderData01_10000.csv");
+            mappingParser.ParseMappingFromOrderFile(@"C:\Users\shnva\Desktop\MarioOrderData01_10000.csv");
 
             Console.WriteLine("Done...");
             Console.ReadKey();
@@ -169,7 +169,7 @@ namespace MarioPizzaImport
                         string name = parts[0];
                         string diameter = parts[1];
                         string description = parts[2];
-                        Decimal price = Decimal.Parse(Regex.Replace(parts[3], "[^0-9.]", ""));
+                        decimal price = Convert.ToDecimal(parts[3]);
 
                         //check if bottom exists by it's name
                         var bottom = db.bottoms.SingleOrDefault(i => i.name == name);
@@ -200,6 +200,108 @@ namespace MarioPizzaImport
                     }
                 }
             }
+        }
+        private static void InsertProducts(string path, dbi298845_prangersEntities database, countrycode countrycode)
+        {
+            using (StreamReader sr = new StreamReader(path))
+            {
+                // Skip the header line.
+                sr.ReadLine();
+                String line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    //categorie;subcategorie;productnaam;productomschrijving;prijs;spicy;vegetarisch;available;amount;name
+                    string[] parts = line.Split(';');
+                    string categoryName = parts[0];
+                    string subcategoryName = parts[1];
+                    string name = parts[2];
+                    string description = parts[3];
+                    Decimal price = Decimal.Parse(Regex.Replace(parts[4], "[^0-9.]", ""));
+                    bool spicy = parts[5].ToUpper() == "JA";
+                    bool vegetarian = parts[6].ToUpper() == "JA";
+
+                    int ingredientAmount = Convert.ToInt32(parts[8]);
+                    string ingredientName = parts[9];
+
+                    // Retrieve or create the top level category
+                    productcategory category = database.productcategories.SingleOrDefault(i => i.name == categoryName);
+                    if (category == null)
+                    {
+                        category = new productcategory();
+                        category.name = categoryName;
+                        database.productcategories.Add(category);
+                        Console.WriteLine("Added new top level category called {0}", categoryName);
+                    }
+
+                    // Retrieve or create the subcategory
+                    productcategory subcategory = database.productcategories.SingleOrDefault(i => i.name == subcategoryName && i.parentproductcategoryid == category.id);
+                    if (subcategory == null)
+                    {
+                        subcategory = new productcategory();
+                        subcategory.name = subcategoryName;
+                        subcategory.parentproductcategoryid = category.id;
+                        database.productcategories.Add(subcategory);
+                        Console.WriteLine("Added new child to category {0} called {1}", categoryName, subcategoryName);
+                    }
+
+                    product product = database.products.SingleOrDefault(i => i.name == name);
+                    if (product == null)
+                    {
+                        product = new product();
+                        product.name = name;
+                        product.description = description;
+                        product.isspicy = spicy;
+                        product.isvegetarian = vegetarian;
+                        product.productcategory = subcategory.id;
+                        database.products.Add(product);
+
+                        // Create a productprice for the current price.
+                        productprice productprice = new productprice();
+                        productprice.product = product;
+                        productprice.price = price;
+                        productprice.startdate = DateTime.Now;
+                        database.productprices.Add(productprice);
+                        Console.WriteLine("New product {0} created", name);
+                    }
+                    // If the product already exists, update every field except name, this includes creating a new price.
+                    else
+                    {
+                        product.description = description;
+                        product.isspicy = spicy;
+                        product.isvegetarian = vegetarian;
+                        product.productcategory = subcategory.id;
+
+                        // Create a productprice for the current price.
+                        productprice productprice = new productprice();
+                        productprice.product = product;
+                        productprice.price = price;
+                        productprice.startdate = DateTime.Now;
+                        database.productprices.Add(productprice);
+                        Console.WriteLine("Updating existing product {0}", name);
+                    }
+
+                    ingredient ingredient = database.ingredients.SingleOrDefault(i => i.name == ingredientName);
+
+
+                    if (ingredient == null)
+                    {
+                        Console.WriteLine("Cannot resove {0} from ingredients", ingredient);
+
+                    }
+                    else
+                    {
+
+                        var productingredient = new productingredient();
+                        productingredient.ingredient = ingredient;
+                        productingredient.product = product;
+                        productingredient.amount = ingredientAmount;
+                        Console.WriteLine("Added {0} to {1}", ingredient.name, product.name);
+                        database.productingredients.Add(productingredient);
+                    }
+                    database.SaveChanges();
+                }
+            }
+
         }
     
         static void InsertExtraIngredients(string path, dbi298845_prangersEntities db, countrycode countrycode)
@@ -239,8 +341,7 @@ namespace MarioPizzaImport
                                 countrycode = countrycode
                             };
 
-                            ingredient.ingredientprices.Add(ingredientprice);
-                            db.ingredients.Add(ingredient);
+                            db.ingredientprices.Add(ingredientprice);
                             db.SaveChanges();
                             Console.WriteLine("Ingredient added");
                         }
