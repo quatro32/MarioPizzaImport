@@ -141,25 +141,6 @@ namespace MarioPizzaImport
             Console.ReadKey();
         }
 
-        DataTable LoadWorksheetInDataTable(string fileName, string sheetName)
-        {
-            DataTable sheetData = new DataTable();
-            using (OleDbConnection conn = this.returnConnection(fileName))
-            {
-                conn.Open();
-                // retrieve the data using data adapter
-                OleDbDataAdapter sheetAdapter = new OleDbDataAdapter("select * from [" + sheetName + "$]", conn);
-                sheetAdapter.Fill(sheetData);
-                conn.Close();
-            }
-            return sheetData;
-        }
-
-        private OleDbConnection returnConnection(string fileName)
-        {
-            return new OleDbConnection();
-        }
-
         private static void InsertProducts(string path, dbi298845_prangersEntities database, countrycode countrycode)
         {
             using (StreamReader sr = new StreamReader(path))
