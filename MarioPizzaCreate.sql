@@ -73,7 +73,7 @@ go
 create table ingredientprice
 (
 	id int not null
-		primary key,
+		primary key identity(1,1),
 	ingredientid int not null
 		constraint fk_ingredientprice_ingredient
 			references ingredient,
