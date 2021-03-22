@@ -189,7 +189,7 @@ namespace MarioPizzaImport
                     {
                         product = new product();
                         product.name = name;
-                        //product.description = description;
+                        product.description = description;
                         product.isspicy = spicy;
                         product.isvegetarian = vegetarian;
                         product.productcategory = subcategory.id;
@@ -206,7 +206,7 @@ namespace MarioPizzaImport
                     // If the product already exists, update every field except name, this includes creating a new price.
                     else
                     {
-                        //product.description = description;
+                        product.description = description;
                         product.isspicy = spicy;
                         product.isvegetarian = vegetarian;
                         product.productcategory = subcategory.id;
