@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using EntityFramework.BulkInsert.Extensions;
 
 namespace MarioPizzaImport
 {
@@ -130,68 +129,37 @@ namespace MarioPizzaImport
             postalCodeImporter.Run(@"C:\Users\shnva\Desktop\Postcode tabel.mdb");
 
             StoreImporter storeImporter = new StoreImporter(database, countrycode);
-            storeImporter.Run(@"C:\Users\shnva\Desktop\Winkels Mario.txt");
+            storeImporter.Run(@"C:\Users\shnva\Desktop\\Winkels Mario.txt");
+
+            BottomImporter bottomImporter = new BottomImporter(database, countrycode);
+            bottomImporter.Run(@"C:\Users\shnva\Desktop\pizzabodems.xlsx");
 
             InsertExtraIngredients(@"C:\Users\shnva\Desktop\ingredienten.csv", database, countrycode);
-            InsertBottoms(@"C:\Users\shnva\Desktop\pizzabodems.csv", database, countrycode);
             InsertProducts(@"C:\Users\shnva\Desktop\Overige producten.csv", database, countrycode);
-           
+
             Console.WriteLine("Done...");
             Console.ReadKey();
         }
 
-        static void InsertBottoms(string path, dbi298845_prangersEntities db, countrycode countrycode)
+        DataTable LoadWorksheetInDataTable(string fileName, string sheetName)
         {
-
-            using (StreamReader sr = new StreamReader(path))
+            DataTable sheetData = new DataTable();
+            using (OleDbConnection conn = this.returnConnection(fileName))
             {
-                String line;
-                bool isHeaderLine = true;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    if (isHeaderLine)//skip first line in csv file, since it's an header line. we don't want that values
-                    {
-                        isHeaderLine = false;
-                    }
-                    else
-                    {
-                        //split all lines in csv to values
-                        string[] parts = line.Split(';');
-                        string name = parts[0];
-                        string diameter = parts[1];
-                        string description = parts[2];
-                        decimal price = Convert.ToDecimal(parts[3]);
-
-                        //check if bottom exists by it's name
-                        var bottom = db.bottoms.SingleOrDefault(i => i.name == name);
-                        if (bottom == null)//if not, create a new one
-                        {
-                            bottom = new bottom()
-                            {
-                                name = name,
-                                diameter = Convert.ToInt32(diameter),
-                                //description has to be added to database,
-                            };
-
-                            //if a bottom doesn't exists ALWAYS create a bottomprice, since it hasn't got any
-                            var bottomprice = new bottomprice()
-                            {
-                                bottom = bottom,
-                                countrycode = countrycode,
-                                currency = "EUR",
-                                startdate = DateTime.Now,
-                                vat = 9.0m,
-                                price = price
-                            };
-
-                            db.bottomprices.Add(bottomprice);
-                            db.SaveChanges();
-                            Console.WriteLine("1 bottom and bottomprice added...");
-                        }
-                    }
-                }
+                conn.Open();
+                // retrieve the data using data adapter
+                OleDbDataAdapter sheetAdapter = new OleDbDataAdapter("select * from [" + sheetName + "$]", conn);
+                sheetAdapter.Fill(sheetData);
+                conn.Close();
             }
+            return sheetData;
         }
+
+        private OleDbConnection returnConnection(string fileName)
+        {
+            return new OleDbConnection();
+        }
+
         private static void InsertProducts(string path, dbi298845_prangersEntities database, countrycode countrycode)
         {
             using (StreamReader sr = new StreamReader(path))
@@ -240,7 +208,7 @@ namespace MarioPizzaImport
                     {
                         product = new product();
                         product.name = name;
-                        product.description = description;
+                        //product.description = description;
                         product.isspicy = spicy;
                         product.isvegetarian = vegetarian;
                         product.productcategory = subcategory.id;
@@ -257,7 +225,7 @@ namespace MarioPizzaImport
                     // If the product already exists, update every field except name, this includes creating a new price.
                     else
                     {
-                        product.description = description;
+                        //product.description = description;
                         product.isspicy = spicy;
                         product.isvegetarian = vegetarian;
                         product.productcategory = subcategory.id;

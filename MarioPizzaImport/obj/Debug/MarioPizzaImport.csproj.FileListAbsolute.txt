@@ -10,7 +10,6 @@ C:\Users\shnva\source\repos\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPiz
 C:\Users\shnva\source\repos\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csproj.CopyComplete
 C:\Users\shnva\source\repos\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.exe
 C:\Users\shnva\source\repos\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.pdb
-C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csprojAssemblyReference.cache
 C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csproj.CoreCompileInputs.cache
 C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.exe
 C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.pdb
@@ -22,3 +21,4 @@ C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFr
 C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFramework.xml
 C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csproj.CopyComplete
+C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csprojAssemblyReference.cache

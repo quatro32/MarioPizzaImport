@@ -58,6 +58,7 @@
     <Compile Include="bottom.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="BottomImporter.cs" />
     <Compile Include="bottomprice.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
