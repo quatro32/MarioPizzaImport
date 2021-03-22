@@ -126,6 +126,7 @@
     <NavigationProperty Name="user" Relationship="Self.fk_order_client" FromRole="order" ToRole="user" />
     <NavigationProperty Name="store" Relationship="Self.fk_order_store" FromRole="order" ToRole="store" />
     <NavigationProperty Name="orderlines" Relationship="Self.fk_productorder_order" FromRole="order" ToRole="orderline" />
+    <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="orderline">
     <Key>
@@ -173,6 +174,7 @@
     <NavigationProperty Name="productcategory1" Relationship="Self.fk_product_productsubcategory" FromRole="product" ToRole="productcategory" />
     <NavigationProperty Name="productingredients" Relationship="Self.fk_productingredient_product" FromRole="product" ToRole="productingredient" />
     <NavigationProperty Name="productprices" Relationship="Self.fk_productprice_product" FromRole="product" ToRole="productprice" />
+    <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="productcategory">
     <Key>
@@ -274,7 +276,7 @@
     <Property Name="addressid" Type="Int32" Nullable="false" />
     <NavigationProperty Name="address" Relationship="Self.fk_user_address" FromRole="user" ToRole="address" />
     <NavigationProperty Name="orders" Relationship="Self.fk_order_client" FromRole="user" ToRole="order" />
-    <Property Name="password" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
   </EntityType>
   <Association Name="fk_address_postalcode">
     <End Role="postalcode" Type="Self.postalcode" Multiplicity="0..1" />
@@ -766,6 +768,15 @@
       <End Role="township" EntitySet="townships" />
       <End Role="store" EntitySet="stores" />
     </AssociationSet>
+    <EntitySet Name="import_log" EntityType="dbi298845_prangersModel.import_log" />
+    <EntitySet Name="mappings" EntityType="dbi298845_prangersModel.mapping" />
+    <EntitySet Name="postalcode_import" EntityType="dbi298845_prangersModel.postalcode_import" />
+    <FunctionImport Name="ImportPostalCode" />
+    <FunctionImport Name="SaveLog">
+      <Parameter Name="type" Mode="In" Type="String" />
+      <Parameter Name="fileName" Mode="In" Type="String" />
+      <Parameter Name="errorString" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <Association Name="fk_store_township">
     <End Type="dbi298845_prangersModel.township" Role="township" Multiplicity="1" />
@@ -779,4 +790,39 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <EntityType Name="import_log">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="time" Type="DateTime" Precision="3" />
+    <Property Name="filename" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="error" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="type" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="mapping">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="originalname" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="mappedto" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="isingredient" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="postalcode_import">
+    <Key>
+      <PropertyRef Name="postalcode" />
+      <PropertyRef Name="iseven" />
+      <PropertyRef Name="startingnumber" />
+      <PropertyRef Name="endingnumber" />
+      <PropertyRef Name="city" />
+    </Key>
+    <Property Name="postalcode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="iseven" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="startingnumber" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="endingnumber" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="city" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="street" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="township" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+  </EntityType>
 </Schema>
