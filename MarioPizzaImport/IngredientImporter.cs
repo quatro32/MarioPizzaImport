@@ -1,105 +1,65 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.OleDb;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MarioPizzaImport
 {
-    class IngredientImporter : Importer<productingredient>
+    class IngredientImporter: Importer<ingredient>
     {
         public IngredientImporter(dbi298845_prangersEntities database, countrycode countrycode) : base(database, countrycode) { }
 
-        override protected int Import(string filePath)
+        protected override int Import(string filePath)
         {
-            List<productingredient> allIngredients = new List<productingredient>();
+            int numberOfIngredientImported = 0;
 
-            using (Stream storeStream = new FileStream(filePath, FileMode.Open))
+            using (StreamReader sr = new StreamReader(filePath))
             {
-                using (StreamReader storeReader = new StreamReader(storeStream))
+                String line;
+                bool isHeaderLine = true;
+                while ((line = sr.ReadLine()) != null)
                 {
-                    List<string> allLineIngredientInformation = new List<string>();
-
-                    string lineIngredientInformation = null;
-
-                    while ((lineIngredientInformation = storeReader.ReadLine()) != null)
+                    if (isHeaderLine)
                     {
-                        lineIngredientInformation = lineIngredientInformation.Trim();
+                        isHeaderLine = false;
+                    }
+                    else
+                    {
+                        string[] parts = line.Split(';');
+                        string name = parts[0];
+                        decimal price = Decimal.Parse(Regex.Match(parts[1], @"[0-9]+(\.[0-9]+)?").Value);
 
-                        if (lineIngredientInformation.Length > 0)
+                        // Controleren of het ingredient al voorkomt
+                        var ingredient = database.ingredients.SingleOrDefault(i => i.name == name);
+                        if (ingredient == null)
                         {
-                            allLineIngredientInformation.Add(lineIngredientInformation);
+                            ingredient = new ingredient()
+                            {
+                                name = name
+                            };
+
+                            var ingredientprice = new ingredientprice()
+                            {
+                                ingredient = ingredient,
+                                startdate = DateTime.Now,
+                                vat = 9.0m,
+                                price = price,
+                                currency = "EUR",
+                                countrycode = countrycode
+                            };
+
+                            ingredient.ingredientprices.Add(ingredientprice);
+                            database.ingredients.Add(ingredient);
+                            database.SaveChanges();
+                            Console.WriteLine("Ingredient added");
+
+                            numberOfIngredientImported += 1;
                         }
                     }
-
-                    if (allLineIngredientInformation.Count != 0)
-                    {
-                        productingredient productIngredient = CreateIngredientFromAllLine(allLineIngredientInformation);
-                        if (productIngredient != null)
-                        {
-                            allIngredients.Add(productIngredient);
-                        }
-                        allLineIngredientInformation.Clear();
-                    }
                 }
             }
 
-            List<string> allIngredientNames = new List<string>();
-            allIngredients.ForEach(s => allIngredientNames.Add(s.ingredient.name));
-
-            List<productingredient> allExistingIngredients = database.productingredients.Where(s => allIngredientNames.Contains(s.ingredient.name)).ToList();
-            List<productingredient> allNewIngredients = allIngredients.Where(s => allExistingIngredients.Where(existing => existing.ingredient.name.Equals(s.ingredient.name)).Count() == 0).ToList();
-
-            database.productingredients.AddRange(allIngredients);
-            database.SaveChanges();
-
-            Console.WriteLine("Found {0} existing ingredients", allExistingIngredients.Count);
-            Console.WriteLine("Found {0} new ingredients", allNewIngredients.Count);
-
-            allNewIngredients.ForEach(s => Console.WriteLine("Imported new ingredient {0}", s.ingredient.name));
-
-            return allIngredients.Count;
-        }
-
-        productingredient CreateIngredientFromAllLine(List<string> allLineIngredientInformation)
-        {
-
-            string productName = allLineIngredientInformation[2];
-            string ingredientName = allLineIngredientInformation[10];
-
-            product product = database.products.SingleOrDefault(s => s.name == productName);
-            ingredient ingredient = database.ingredients.SingleOrDefault(s => s.name == ingredientName);
-
-            if (product == null)
-            {
-                product = GetMappedProduct(productName);
-                if(product == null)
-                {
-                    Logger.Instance.LogError(filePath, "Could not find product named " + ingredientName);
-                    return null;
-                }
-            }
-
-            if (ingredient == null)
-            {
-                ingredient = GetMappedIngredient(ingredientName);
-                if (ingredient == null)
-                {
-                    Logger.Instance.LogError(filePath, String.Format("Could not find ingredient named {0} for product {1}", ingredientName, productName));
-                    return null;
-                }
-            }
-
-            productingredient productingredient = new productingredient();
-
-            productingredient.product = product;
-            productingredient.amount = Convert.ToInt32(allLineIngredientInformation[9]);
-
-            productingredient.ingredient = ingredient;
-
-            return productingredient;
+            return numberOfIngredientImported;
         }
     }
 }

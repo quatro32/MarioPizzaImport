@@ -19,20 +19,19 @@ namespace MarioPizzaImport
             StoreImporter storeImporter = new StoreImporter(database, countrycode);
             storeImporter.Run(@"C:\Users\shnva\Desktop\Winkels Mario.txt");
 
-            InsertExtraIngredients(@"C:\Users\Peter\Downloads\MarioData\Extra ingredienten.csv", database, countrycode);
-
             BottomImporter bottomImporter = new BottomImporter(database, countrycode);
             bottomImporter.Run(@"C:\Users\Peter\Downloads\MarioData\pizzabodems.csv");
 
             ProductImporter productImporter = new ProductImporter(database, countrycode);
             productImporter.Run(@"C:\Users\Peter\Downloads\MarioData\overige producten.csv");
 
-            //Import the relation between pizza and ingredients.
-            IngredientImporter ingredientImporter = new IngredientImporter(database, countrycode);
-            ingredientImporter.Run(@"C:\Users\Peter\Downloads\MarioData\pizza_ingredienten.csv");
-
-            ExtraIngredientImporter extraIngredientImporter = new ExtraIngredientImporter(database, countrycode);
+            //Import individual ingredients
+            IngredientImporter extraIngredientImporter = new IngredientImporter(database, countrycode);
             extraIngredientImporter.Run(@"C:\Users\Peter\Downloads\MarioData\Extra Ingredienten.csv");
+
+            //Import the relation between pizza and ingredients.
+            PizzaIngredientImporter ingredientImporter = new PizzaIngredientImporter(database, countrycode);
+            ingredientImporter.Run(@"C:\Users\Peter\Downloads\MarioData\pizza_ingredienten.csv");
 
             /**
              * Once all other changes are merged, we need to make this into a proper console application with multiple commands. Since the mapping should
@@ -44,11 +43,6 @@ namespace MarioPizzaImport
 
             Console.WriteLine("Done...");
             Console.ReadKey();
-        }
-
-        static void InsertExtraIngredients(string path, dbi298845_prangersEntities db, countrycode countrycode)
-        {
-            
         }
 
         private static countrycode getOrCreateDefaultCountryCode(dbi298845_prangersEntities db)
