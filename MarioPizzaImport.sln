@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.1062
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarioPizzaImport", "MarioPizzaImport\MarioPizzaImport.csproj", "{F3CDBDD6-CB6E-40D2-A86F-65008F6C52D9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14FE74D3-B987-40A2-A5F7-CECDD7DAB637}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
