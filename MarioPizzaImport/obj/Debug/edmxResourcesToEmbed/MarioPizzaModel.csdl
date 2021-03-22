@@ -7,7 +7,8 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="number" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="countrycode" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-    <Property Name="postalcodeid" Type="Int32" Nullable="false" />
+    <Property Name="street" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="postalcodeid" Type="Int32" Nullable="true" />
     <NavigationProperty Name="postalcode" Relationship="Self.fk_address_postalcode" FromRole="address" ToRole="postalcode" />
     <NavigationProperty Name="orders" Relationship="Self.fk_order_address" FromRole="address" ToRole="order" />
     <NavigationProperty Name="stores" Relationship="Self.fk_store_address" FromRole="address" ToRole="store" />
@@ -251,6 +252,8 @@
     <Property Name="phonenumber" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
     <NavigationProperty Name="address" Relationship="Self.fk_store_address" FromRole="store" ToRole="address" />
     <NavigationProperty Name="orders" Relationship="Self.fk_order_store" FromRole="store" ToRole="order" />
+    <Property Name="townshipid" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="township" Relationship="dbi298845_prangersModel.fk_store_township" FromRole="store" ToRole="township" />
   </EntityType>
   <EntityType Name="township">
     <Key>
@@ -259,6 +262,7 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="postalcodes" Relationship="Self.fk_postalcode_township" FromRole="township" ToRole="postalcode" />
+    <NavigationProperty Name="stores" Relationship="dbi298845_prangersModel.fk_store_township" FromRole="township" ToRole="store" />
   </EntityType>
   <EntityType Name="user">
     <Key>
@@ -267,13 +271,13 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="addressid" Type="Int32" Nullable="false" />
     <NavigationProperty Name="address" Relationship="Self.fk_user_address" FromRole="user" ToRole="address" />
     <NavigationProperty Name="orders" Relationship="Self.fk_order_client" FromRole="user" ToRole="order" />
+    <Property Name="password" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
   </EntityType>
   <Association Name="fk_address_postalcode">
-    <End Role="postalcode" Type="Self.postalcode" Multiplicity="1" />
+    <End Role="postalcode" Type="Self.postalcode" Multiplicity="0..1" />
     <End Role="address" Type="Self.address" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="postalcode">
@@ -758,5 +762,21 @@
       <End Role="sauce" EntitySet="sauces" />
       <End Role="productordersauce" EntitySet="productordersauces" />
     </AssociationSet>
+    <AssociationSet Name="fk_store_township" Association="dbi298845_prangersModel.fk_store_township">
+      <End Role="township" EntitySet="townships" />
+      <End Role="store" EntitySet="stores" />
+    </AssociationSet>
   </EntityContainer>
+  <Association Name="fk_store_township">
+    <End Type="dbi298845_prangersModel.township" Role="township" Multiplicity="1" />
+    <End Type="dbi298845_prangersModel.store" Role="store" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="township">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="store">
+        <PropertyRef Name="townshipid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

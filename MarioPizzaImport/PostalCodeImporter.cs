@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data.OleDb;
 using System.Data.SqlClient;
@@ -13,10 +12,11 @@ namespace MarioPizzaImport
 
         protected override int Import(string filePath)
         {
+
             OleDbConnectionStringBuilder connectionStringBuilder = new OleDbConnectionStringBuilder(@"Provider=Microsoft.JET.OLEDB.4.0;");
             connectionStringBuilder.DataSource = filePath;
 
-            SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["dbi298845_prangersEntities"].ConnectionString);
+            SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["dbi298845_postalcodeImport"].ConnectionString);
             sqlConnection.Open();
 
             using (var postalCodeDatabaseConnection = new OleDbConnection(connectionStringBuilder.ConnectionString))
@@ -65,4 +65,5 @@ namespace MarioPizzaImport
             return database.addresses.Count();
         }
     }
+
 }

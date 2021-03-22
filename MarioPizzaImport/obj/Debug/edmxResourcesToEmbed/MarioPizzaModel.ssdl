@@ -7,7 +7,8 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="number" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="countrycode" Type="varchar" MaxLength="2" />
-    <Property Name="postalcodeid" Type="int" Nullable="false" />
+    <Property Name="postalcodeid" Type="int" />
+    <Property Name="street" Type="varchar" MaxLength="255" Nullable="false" />
   </EntityType>
   <EntityType Name="bottom">
     <Key>
@@ -40,7 +41,7 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
     <Property Name="code" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="startdate" Type="datetime" Nullable="false" />
     <Property Name="enddate" Type="datetime" Nullable="false" />
@@ -72,7 +73,7 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
     <Property Name="ingredientid" Type="int" Nullable="false" />
     <Property Name="price" Type="decimal" Precision="4" Scale="2" Nullable="false" />
     <Property Name="startdate" Type="datetime" Nullable="false" />
@@ -84,7 +85,7 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
     <Property Name="datecreated" Type="datetime" Nullable="false" />
     <Property Name="datedelivered" Type="datetime" />
     <Property Name="phonenumber" Type="varchar" MaxLength="45" />
@@ -123,6 +124,8 @@
     <Property Name="street" Type="varchar" MaxLength="255" />
     <Property Name="townshipid" Type="int" Nullable="false" />
   </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
   <EntityType Name="product">
     <Key>
       <PropertyRef Name="id" />
@@ -196,6 +199,7 @@
     <Property Name="name" Type="varchar" MaxLength="45" />
     <Property Name="addressid" Type="int" Nullable="false" />
     <Property Name="phonenumber" Type="varchar" MaxLength="45" Nullable="false" />
+    <Property Name="townshipid" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="township">
     <Key>
@@ -211,11 +215,11 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
     <Property Name="email" Type="varchar" MaxLength="45" Nullable="false" />
-    <Property Name="password" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="addressid" Type="int" Nullable="false" />
+    <Property Name="password" Type="varchar" MaxLength="255" Nullable="false" />
   </EntityType>
   <Association Name="fk_address_postalcode">
-    <End Role="postalcode" Type="Self.postalcode" Multiplicity="1" />
+    <End Role="postalcode" Type="Self.postalcode" Multiplicity="0..1" />
     <End Role="address" Type="Self.address" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="postalcode">
@@ -526,6 +530,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_store_township">
+    <End Role="township" Type="Self.township" Multiplicity="1" />
+    <End Role="store" Type="Self.store" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="township">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="store">
+        <PropertyRef Name="townshipid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_user_address">
     <End Role="address" Type="Self.address" Multiplicity="1" />
     <End Role="user" Type="Self.user" Multiplicity="*" />
@@ -686,6 +702,10 @@
     </AssociationSet>
     <AssociationSet Name="fk_store_address" Association="Self.fk_store_address">
       <End Role="address" EntitySet="address" />
+      <End Role="store" EntitySet="store" />
+    </AssociationSet>
+    <AssociationSet Name="fk_store_township" Association="Self.fk_store_township">
+      <End Role="township" EntitySet="township" />
       <End Role="store" EntitySet="store" />
     </AssociationSet>
     <AssociationSet Name="fk_user_address" Association="Self.fk_user_address">
