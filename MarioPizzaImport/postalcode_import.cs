@@ -15,20 +15,22 @@ namespace MarioPizzaImport
 using System;
     using System.Collections.Generic;
     
-public partial class productorderingredient
+public partial class postalcode_import
 {
 
-    public int productorderid { get; set; }
+    public string postalcode { get; set; }
 
-    public int ingredientid { get; set; }
+    public decimal iseven { get; set; }
 
-    public int amount { get; set; }
+    public decimal startingnumber { get; set; }
 
+    public decimal endingnumber { get; set; }
 
+    public string city { get; set; }
 
-    public virtual ingredient ingredient { get; set; }
+    public string street { get; set; }
 
-    public virtual orderline orderline { get; set; }
+    public string township { get; set; }
 
 }
 

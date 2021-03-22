@@ -65,6 +65,16 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
         </EntityType>
+        <EntityType Name="import_log">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="time" Type="datetime" />
+          <Property Name="filename" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="error" Type="text" />
+          <Property Name="type" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
         <EntityType Name="ingredient">
           <Key>
             <PropertyRef Name="id" />
@@ -86,6 +96,15 @@
           <Property Name="vat" Type="decimal" Precision="4" Scale="2" Nullable="false" />
           <Property Name="countrycodeid" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="mapping">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="originalname" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="mappedto" Type="varchar" MaxLength="255" />
+          <Property Name="isingredient" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="order">
           <Key>
             <PropertyRef Name="id" />
@@ -104,6 +123,7 @@
           <Property Name="preferredtime" Type="datetime" Nullable="false" />
           <Property Name="price" Type="decimal" Precision="5" Scale="2" Nullable="false" />
           <Property Name="discount" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="orderline">
           <Key>
@@ -130,7 +150,23 @@
           <Property Name="townshipid" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'dbi298845_prangers.dbo.postalcode_import' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="postalcode_import">
+          <Key>
+            <PropertyRef Name="postalcode" />
+            <PropertyRef Name="iseven" />
+            <PropertyRef Name="startingnumber" />
+            <PropertyRef Name="endingnumber" />
+            <PropertyRef Name="city" />
+          </Key>
+          <Property Name="postalcode" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="iseven" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="startingnumber" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="endingnumber" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="city" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="street" Type="varchar" MaxLength="255" />
+          <Property Name="township" Type="varchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="product">
           <Key>
             <PropertyRef Name="id" />
@@ -141,6 +177,7 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <Property Name="productcategory" Type="int" Nullable="false" />
           <Property Name="isvegetarian" Type="bit" Nullable="false" />
           <Property Name="isspicy" Type="bit" Nullable="false" />
+          <Property Name="description" Type="text" />
         </EntityType>
         <EntityType Name="productcategory">
           <Key>
@@ -221,7 +258,7 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <Property Name="name" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="email" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="addressid" Type="int" Nullable="false" />
-          <Property Name="password" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="password" Type="varchar" MaxLength="255" />
         </EntityType>
         <Association Name="fk_address_postalcode">
           <End Role="postalcode" Type="Self.postalcode" Multiplicity="0..1" />
@@ -535,18 +572,6 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_store_township">
-          <End Role="township" Type="Self.township" Multiplicity="1" />
-          <End Role="store" Type="Self.store" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="township">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="store">
-              <PropertyRef Name="townshipid" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="fk_user_address">
           <End Role="address" Type="Self.address" Multiplicity="1" />
           <End Role="user" Type="Self.user" Multiplicity="*" />
@@ -583,6 +608,24 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="store_township_id_fk">
+          <End Role="township" Type="Self.township" Multiplicity="1" />
+          <End Role="store" Type="Self.store" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="township">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="store">
+              <PropertyRef Name="townshipid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="ImportPostalCode" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SaveLog" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="type" Type="varchar" Mode="In" />
+          <Parameter Name="fileName" Type="varchar" Mode="In" />
+          <Parameter Name="errorString" Type="text" Mode="In" />
+        </Function>
         <EntityContainer Name="dbi298845_prangersModelStoreContainer">
           <EntitySet Name="address" EntityType="Self.address" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bottom" EntityType="Self.bottom" Schema="dbo" store:Type="Tables" />
@@ -590,8 +633,10 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <EntitySet Name="countrycode" EntityType="Self.countrycode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="coupon" EntityType="Self.coupon" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="deliverytype" EntityType="Self.deliverytype" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="import_log" EntityType="Self.import_log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ingredient" EntityType="Self.ingredient" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ingredientprice" EntityType="Self.ingredientprice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="mapping" EntityType="Self.mapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="order" EntityType="Self.order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="orderline" EntityType="Self.orderline" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="postalcode" EntityType="Self.postalcode" Schema="dbo" store:Type="Tables" />
@@ -605,6 +650,17 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <EntitySet Name="store" EntityType="Self.store" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="township" EntityType="Self.township" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="postalcode_import" EntityType="Self.postalcode_import" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [postalcode_import].[postalcode] AS [postalcode], 
+    [postalcode_import].[iseven] AS [iseven], 
+    [postalcode_import].[startingnumber] AS [startingnumber], 
+    [postalcode_import].[endingnumber] AS [endingnumber], 
+    [postalcode_import].[city] AS [city], 
+    [postalcode_import].[street] AS [street], 
+    [postalcode_import].[township] AS [township]
+    FROM [dbo].[postalcode_import] AS [postalcode_import]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="fk_address_postalcode" Association="Self.fk_address_postalcode">
             <End Role="postalcode" EntitySet="postalcode" />
             <End Role="address" EntitySet="address" />
@@ -709,10 +765,6 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
             <End Role="address" EntitySet="address" />
             <End Role="store" EntitySet="store" />
           </AssociationSet>
-          <AssociationSet Name="fk_store_township" Association="Self.fk_store_township">
-            <End Role="township" EntitySet="township" />
-            <End Role="store" EntitySet="store" />
-          </AssociationSet>
           <AssociationSet Name="fk_user_address" Association="Self.fk_user_address">
             <End Role="address" EntitySet="address" />
             <End Role="user" EntitySet="user" />
@@ -724,6 +776,10 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <AssociationSet Name="pizzaorderingredients_orderpizza" Association="Self.pizzaorderingredients_orderpizza">
             <End Role="orderline" EntitySet="orderline" />
             <End Role="productorderingredient" EntitySet="productorderingredient" />
+          </AssociationSet>
+          <AssociationSet Name="store_township_id_fk" Association="Self.store_township_id_fk">
+            <End Role="township" EntitySet="township" />
+            <End Role="store" EntitySet="store" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -856,6 +912,7 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <NavigationProperty Name="user" Relationship="Self.fk_order_client" FromRole="order" ToRole="user" />
           <NavigationProperty Name="store" Relationship="Self.fk_order_store" FromRole="order" ToRole="store" />
           <NavigationProperty Name="orderlines" Relationship="Self.fk_productorder_order" FromRole="order" ToRole="orderline" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="orderline">
           <Key>
@@ -903,6 +960,7 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <NavigationProperty Name="productcategory1" Relationship="Self.fk_product_productsubcategory" FromRole="product" ToRole="productcategory" />
           <NavigationProperty Name="productingredients" Relationship="Self.fk_productingredient_product" FromRole="product" ToRole="productingredient" />
           <NavigationProperty Name="productprices" Relationship="Self.fk_productprice_product" FromRole="product" ToRole="productprice" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="productcategory">
           <Key>
@@ -1004,7 +1062,7 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <Property Name="addressid" Type="Int32" Nullable="false" />
           <NavigationProperty Name="address" Relationship="Self.fk_user_address" FromRole="user" ToRole="address" />
           <NavigationProperty Name="orders" Relationship="Self.fk_order_client" FromRole="user" ToRole="order" />
-          <Property Name="password" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="fk_address_postalcode">
           <End Role="postalcode" Type="Self.postalcode" Multiplicity="0..1" />
@@ -1496,6 +1554,15 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
             <End Role="township" EntitySet="townships" />
             <End Role="store" EntitySet="stores" />
           </AssociationSet>
+          <EntitySet Name="import_log" EntityType="dbi298845_prangersModel.import_log" />
+          <EntitySet Name="mappings" EntityType="dbi298845_prangersModel.mapping" />
+          <EntitySet Name="postalcode_import" EntityType="dbi298845_prangersModel.postalcode_import" />
+          <FunctionImport Name="ImportPostalCode" />
+          <FunctionImport Name="SaveLog">
+            <Parameter Name="type" Mode="In" Type="String" />
+            <Parameter Name="fileName" Mode="In" Type="String" />
+            <Parameter Name="errorString" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <Association Name="fk_store_township">
           <End Type="dbi298845_prangersModel.township" Role="township" Multiplicity="1" />
@@ -1509,6 +1576,41 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="import_log">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="time" Type="DateTime" Precision="3" />
+          <Property Name="filename" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="error" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="type" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="mapping">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="originalname" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="mappedto" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="isingredient" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="postalcode_import">
+          <Key>
+            <PropertyRef Name="postalcode" />
+            <PropertyRef Name="iseven" />
+            <PropertyRef Name="startingnumber" />
+            <PropertyRef Name="endingnumber" />
+            <PropertyRef Name="city" />
+          </Key>
+          <Property Name="postalcode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="iseven" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="startingnumber" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="endingnumber" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="city" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="street" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="township" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1607,6 +1709,7 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <EntitySetMapping Name="orders">
             <EntityTypeMapping TypeName="dbi298845_prangersModel.order">
               <MappingFragment StoreEntitySet="order">
+                <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="datecreated" ColumnName="datecreated" />
                 <ScalarProperty Name="datedelivered" ColumnName="datedelivered" />
@@ -1653,6 +1756,7 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
           <EntitySetMapping Name="products">
             <EntityTypeMapping TypeName="dbi298845_prangersModel.product">
               <MappingFragment StoreEntitySet="product">
+                <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="sauceid" ColumnName="sauceid" />
@@ -1749,6 +1853,42 @@ warning 6002: The table/view 'dbi366191_wachtwoord.dbo.postalcode_import' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="import_log">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.import_log">
+              <MappingFragment StoreEntitySet="import_log">
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="error" ColumnName="error" />
+                <ScalarProperty Name="filename" ColumnName="filename" />
+                <ScalarProperty Name="time" ColumnName="time" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="mappings">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.mapping">
+              <MappingFragment StoreEntitySet="mapping">
+                <ScalarProperty Name="isingredient" ColumnName="isingredient" />
+                <ScalarProperty Name="mappedto" ColumnName="mappedto" />
+                <ScalarProperty Name="originalname" ColumnName="originalname" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="postalcode_import">
+            <EntityTypeMapping TypeName="dbi298845_prangersModel.postalcode_import">
+              <MappingFragment StoreEntitySet="postalcode_import">
+                <ScalarProperty Name="township" ColumnName="township" />
+                <ScalarProperty Name="street" ColumnName="street" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="endingnumber" ColumnName="endingnumber" />
+                <ScalarProperty Name="startingnumber" ColumnName="startingnumber" />
+                <ScalarProperty Name="iseven" ColumnName="iseven" />
+                <ScalarProperty Name="postalcode" ColumnName="postalcode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ImportPostalCode" FunctionName="dbi298845_prangersModel.Store.ImportPostalCode" />
+          <FunctionImportMapping FunctionImportName="SaveLog" FunctionName="dbi298845_prangersModel.Store.SaveLog" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

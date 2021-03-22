@@ -15,20 +15,18 @@ namespace MarioPizzaImport
 using System;
     using System.Collections.Generic;
     
-public partial class productorderingredient
+public partial class import_log
 {
 
-    public int productorderid { get; set; }
+    public int id { get; set; }
 
-    public int ingredientid { get; set; }
+    public Nullable<System.DateTime> time { get; set; }
 
-    public int amount { get; set; }
+    public string filename { get; set; }
 
+    public string error { get; set; }
 
-
-    public virtual ingredient ingredient { get; set; }
-
-    public virtual orderline orderline { get; set; }
+    public string type { get; set; }
 
 }
 

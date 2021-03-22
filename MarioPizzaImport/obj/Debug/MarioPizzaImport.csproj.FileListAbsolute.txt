@@ -22,3 +22,15 @@ C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFr
 C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFramework.xml
 C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Jos\Desktop\School\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csproj.CopyComplete
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csprojAssemblyReference.cache
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csproj.CoreCompileInputs.cache
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.exe
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.pdb
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\bin\Debug\MarioPizzaImport.exe.config
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\bin\Debug\MarioPizzaImport.exe
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\bin\Debug\MarioPizzaImport.pdb
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFramework.dll
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFramework.xml
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Peter\MarioPizzaImport\MarioPizzaImport\obj\Debug\MarioPizzaImport.csproj.CopyComplete

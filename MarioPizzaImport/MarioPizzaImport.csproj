@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -71,6 +71,9 @@
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Importer.cs" />
+    <Compile Include="import_log.cs">
+      <DependentUpon>MarioPizzaModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="ingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -78,6 +81,10 @@
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Logger.cs" />
+    <Compile Include="mapping.cs">
+      <DependentUpon>MarioPizzaModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MappingParser.cs" />
     <Compile Include="MarioPizzaModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -103,12 +110,16 @@
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PostalCodeImporter.cs" />
+    <Compile Include="postalcode_import.cs">
+      <DependentUpon>MarioPizzaModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="product.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="productcategory.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ProductImporter.cs" />
     <Compile Include="productingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -136,7 +147,6 @@
     <Compile Include="user.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="IngredientImporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

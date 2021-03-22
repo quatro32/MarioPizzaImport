@@ -56,6 +56,9 @@
         <AssociationConnector Association="dbi298845_prangersModel.fk_productcategory_productcategory" ManuallyRouted="false" />
         <AssociationConnector Association="dbi298845_prangersModel.fk_productordersauce_sauce" ManuallyRouted="false" />
         <AssociationConnector Association="dbi298845_prangersModel.fk_store_township" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.import_log" Width="1.5" PointX="10.375" PointY="6.75" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.mapping" Width="1.5" PointX="12.375" PointY="0.75" />
+        <EntityTypeShape EntityType="dbi298845_prangersModel.postalcode_import" Width="1.5" PointX="12.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
