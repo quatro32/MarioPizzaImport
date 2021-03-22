@@ -84,6 +84,7 @@
     <Compile Include="mapping.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="MappingParser.cs" />
     <Compile Include="MarioPizzaModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -118,6 +119,7 @@
     <Compile Include="productcategory.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ProductImporter.cs" />
     <Compile Include="productingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
