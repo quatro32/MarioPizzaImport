@@ -70,7 +70,6 @@ create table ingredient
 )
 go
 
-DROP TABLE ingredientprice;
 create table ingredientprice
 (
 	id int not null
