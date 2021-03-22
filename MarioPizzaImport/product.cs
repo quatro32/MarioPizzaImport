@@ -28,7 +28,6 @@ namespace MarioPizzaImport
         public int productcategory { get; set; }
         public bool isvegetarian { get; set; }
         public bool isspicy { get; set; }
-        public string description { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<orderline> orderlines { get; set; }

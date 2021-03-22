@@ -8,6 +8,17 @@ namespace MarioPizzaImport
 {
     public class StoreImporter : Importer<store>
     {
+        private static Dictionary<string, string> mapCityToAlternativeName = new Dictionary<string, string>()
+        {
+            { "den bosch", "'s-Hertogenbosch" },
+            { "den haag", "'s-Gravenhage" },
+            { "osdorp", "Amsterdam" },
+            { "scheveningen", "'s-Gravenhage" },
+            { "capelle a/d yssel", "CAPELLE AAN DEN IJSSEL" },
+            { "almere buiten", "Almere" },
+            { "etten leur", "Etten-Leur" },
+        };
+
         public StoreImporter(dbi298845_prangersEntities database, countrycode countrycode) : base(database, countrycode) { }
 
         override protected int Import(string filePath)
@@ -37,7 +48,7 @@ namespace MarioPizzaImport
                                 allStore.Add(CreateStoreFromAllLine(allLineStoreInformation));
                             }catch (Exception e)
                             {
-                                // Ignored for now.
+                                Logger.Instance.LogError(this.GetFilePath(), string.Format("Couldn't import store {0}", allLineStoreInformation[0]));
                             }
 
                             allLineStoreInformation.Clear();
@@ -85,11 +96,13 @@ namespace MarioPizzaImport
                 isStoreUpdated = true;
             }
 
-
-            if (!storeExisting.address.postalcode.postalcode1.Equals(storeToImport.address.postalcode.postalcode1))
+            if (storeExisting.address.postalcode == null && storeToImport.address.postalcode != null)
             {
-                storeExisting.address = storeToImport.address;
-                isStoreUpdated = true;
+                if (!storeExisting.address.postalcode.postalcode1.Equals(storeToImport.address.postalcode.postalcode1))
+                {
+                    storeExisting.address = storeToImport.address;
+                    isStoreUpdated = true;
+                }
             }
 
             if (isStoreUpdated)
@@ -102,7 +115,8 @@ namespace MarioPizzaImport
         {
             if (!allLineStoreInformation.Count.Equals(7))
             {
-                Console.WriteLine("Store {0} has incomplete details.", allLineStoreInformation[0]);
+                Logger.Instance.LogError(this.GetFilePath(), string.Format("Store {0} has incomplete details.", allLineStoreInformation[0]));
+                throw new Exception("Store details invalid.");
             }
 
             store store = new store();
@@ -114,6 +128,7 @@ namespace MarioPizzaImport
                 allLineStoreInformation[4], // country
                 allLineStoreInformation[5]  // postalCode
             );
+            store.township = GetTownship(allLineStoreInformation[3]);
             store.phonenumber = FormatPhoneNumber(allLineStoreInformation[6]);
 
             return store;
@@ -122,30 +137,21 @@ namespace MarioPizzaImport
         address CreateAddress(string street, string houseNumber, string city, string country, string postalCode)
         {
             address address = new address();
-            address.postalcode = GetOrCreatePostalCode(street, postalCode, city);
+            address.postalcode = GetPostalCode(street, houseNumber, postalCode);
             address.number = houseNumber;
             address.countrycode = ValidateCountryCode(country);
+            address.street = street;
 
             return address;
         }
 
-        postalcode GetOrCreatePostalCode(string street, string postalCodeString, string city)
+        postalcode GetPostalCode(string street, string houseNumber, string postalCodeString)
         {
+            string houseNumberOnlyNumeric = Regex.Replace(houseNumber, "[^0-9]", "");
+            int houseNumberInt = Convert.ToInt32(houseNumberOnlyNumeric);
             string postalCodeFormatted = FormatPostalCode(postalCodeString);
-            postalcode postalcode = this.database.postalcodes.SingleOrDefault(p => p.postalcode1 == postalCodeFormatted);
-
-            if (postalcode == null)
-            {
-                Console.WriteLine("Postalcode {0} is not known", postalCodeString);
-                throw new Exception();
-            } else if (postalcode.street != street) {
-                if (LevenshteinDistance.Calculate(postalcode.street, street) > 4)
-                {
-                    Console.WriteLine("Street {0} in postalcode table isn't equal to {1} in import file.", postalcode.street, street);
-                }
-            }
-
-            return postalcode;
+            
+            return this.database.postalcodes.SingleOrDefault(p => p.postalcode1 == postalCodeFormatted && p.startingnumber >= houseNumberInt && p.endingnumber <= houseNumberInt);
         }
 
         private static string FormatCity(string city)
@@ -158,7 +164,7 @@ namespace MarioPizzaImport
             return String.Join(" ", allPartUppercased);
         }
 
-        private static string FormatPostalCode(string postalCode)
+        private string FormatPostalCode(string postalCode)
         {
             string regexPostalCode = "[0-9]{4}[A-Z]{2}";
 
@@ -176,7 +182,7 @@ namespace MarioPizzaImport
                 }
                 else
                 {
-                    Console.WriteLine("Postal Code {0} is invalid and could not be repaired.", postalCode);
+                    Logger.Instance.LogError(this.GetFilePath(), string.Format("Postal Code {0} is invalid and could not be repaired.", postalCode));
 
                     throw new Exception();
                 }
@@ -189,7 +195,7 @@ namespace MarioPizzaImport
             return Regex.Replace(phoneNumber, regexPhoneNumber, "");
         }
 
-        private static string ValidateCountryCode(string countryCode)
+        private string ValidateCountryCode(string countryCode)
         {
             string regexPostalCode = "[A-Z]{2}";
 
@@ -199,9 +205,34 @@ namespace MarioPizzaImport
             }
             else
             {
-                Console.WriteLine("Country Code {0} is invalid and could not be repaired.", countryCode);
+                Logger.Instance.LogError(this.GetFilePath(), string.Format("Country Code {0} is invalid and could not be repaired.", countryCode));
 
                 throw new Exception();
+            }
+        }
+
+        private township GetTownship(string city)
+        {
+            string cityNameAlternative = city;
+
+            if (mapCityToAlternativeName.ContainsKey(city.ToLower()))
+            {
+                cityNameAlternative = mapCityToAlternativeName[city.ToLower()];
+            }
+
+            postalcode postalcode = this.database.postalcodes.FirstOrDefault(c => c.city.StartsWith(city) || c.city.StartsWith(cityNameAlternative));
+
+            if (postalcode == null)
+            {
+                Logger.Instance.LogError(this.GetFilePath(), string.Format("Could not find township for city {0}", city));
+                throw new Exception("Township not found.");
+            } else
+            {
+                if (!city.ToLower().Equals(postalcode.city.ToLower()) && LevenshteinDistance.Calculate(city.ToLower(), postalcode.city.ToLower()) > 2)
+                {
+                    Logger.Instance.LogCorrection(this.GetFilePath(), city, postalcode.city);
+                }
+                return postalcode.township;
             }
         }
 

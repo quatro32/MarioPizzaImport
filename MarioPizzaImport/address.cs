@@ -25,7 +25,8 @@ namespace MarioPizzaImport
         public int id { get; set; }
         public string number { get; set; }
         public string countrycode { get; set; }
-        public int postalcodeid { get; set; }
+        public string street { get; set; }
+        public Nullable<int> postalcodeid { get; set; }
     
         public virtual postalcode postalcode { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

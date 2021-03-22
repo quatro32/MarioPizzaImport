@@ -18,6 +18,7 @@ namespace MarioPizzaImport
         public township()
         {
             this.postalcodes = new HashSet<postalcode>();
+            this.stores = new HashSet<store>();
         }
     
         public int id { get; set; }
@@ -25,5 +26,7 @@ namespace MarioPizzaImport
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<postalcode> postalcodes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<store> stores { get; set; }
     }
 }
