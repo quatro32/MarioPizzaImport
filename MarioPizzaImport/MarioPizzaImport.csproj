@@ -72,6 +72,9 @@
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Importer.cs" />
+    <Compile Include="import_log.cs">
+      <DependentUpon>MarioPizzaModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="ingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -79,6 +82,9 @@
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Logger.cs" />
+    <Compile Include="mapping.cs">
+      <DependentUpon>MarioPizzaModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="MarioPizzaModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -104,6 +110,9 @@
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PostalCodeImporter.cs" />
+    <Compile Include="postalcode_import.cs">
+      <DependentUpon>MarioPizzaModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="product.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>

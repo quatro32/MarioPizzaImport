@@ -137,6 +137,14 @@ namespace MarioPizzaImport
             InsertExtraIngredients(@"C:\Users\shnva\Desktop\ingredienten.csv", database, countrycode);
             InsertProducts(@"C:\Users\shnva\Desktop\Overige producten.csv", database, countrycode);
 
+            /**
+             * Once all other changes are merged, we need to make this into a proper console application with multiple commands. Since the mapping should
+             * be executed after importing products and ingredients.
+             * Then the records in the mapping table need to be mapped by hand before orders are imported.
+             */
+            MappingParser mappingParser = new MappingParser(database);
+            mappingParser.ParseMappingFromOrderFile(@"C:\Users\shnva\Desktop\MarioOrderData01_10000.csv");
+
             Console.WriteLine("Done...");
             Console.ReadKey();
         }

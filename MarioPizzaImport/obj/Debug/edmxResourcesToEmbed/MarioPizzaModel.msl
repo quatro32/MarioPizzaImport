@@ -93,6 +93,7 @@
     <EntitySetMapping Name="orders">
       <EntityTypeMapping TypeName="dbi298845_prangersModel.order">
         <MappingFragment StoreEntitySet="order">
+          <ScalarProperty Name="email" ColumnName="email" />
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="datecreated" ColumnName="datecreated" />
           <ScalarProperty Name="datedelivered" ColumnName="datedelivered" />
@@ -139,6 +140,7 @@
     <EntitySetMapping Name="products">
       <EntityTypeMapping TypeName="dbi298845_prangersModel.product">
         <MappingFragment StoreEntitySet="product">
+          <ScalarProperty Name="description" ColumnName="description" />
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="sauceid" ColumnName="sauceid" />
@@ -235,5 +237,41 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="import_log">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.import_log">
+        <MappingFragment StoreEntitySet="import_log">
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="error" ColumnName="error" />
+          <ScalarProperty Name="filename" ColumnName="filename" />
+          <ScalarProperty Name="time" ColumnName="time" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="mappings">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.mapping">
+        <MappingFragment StoreEntitySet="mapping">
+          <ScalarProperty Name="isingredient" ColumnName="isingredient" />
+          <ScalarProperty Name="mappedto" ColumnName="mappedto" />
+          <ScalarProperty Name="originalname" ColumnName="originalname" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="postalcode_import">
+      <EntityTypeMapping TypeName="dbi298845_prangersModel.postalcode_import">
+        <MappingFragment StoreEntitySet="postalcode_import">
+          <ScalarProperty Name="township" ColumnName="township" />
+          <ScalarProperty Name="street" ColumnName="street" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="endingnumber" ColumnName="endingnumber" />
+          <ScalarProperty Name="startingnumber" ColumnName="startingnumber" />
+          <ScalarProperty Name="iseven" ColumnName="iseven" />
+          <ScalarProperty Name="postalcode" ColumnName="postalcode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="ImportPostalCode" FunctionName="dbi298845_prangersModel.Store.ImportPostalCode" />
+    <FunctionImportMapping FunctionImportName="SaveLog" FunctionName="dbi298845_prangersModel.Store.SaveLog" />
   </EntityContainerMapping>
 </Mapping>
