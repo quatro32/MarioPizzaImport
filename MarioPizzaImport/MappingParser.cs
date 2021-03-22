@@ -24,22 +24,19 @@ namespace MarioPizzaImport
             using (StreamReader sr = new StreamReader(filePath))
             {
                 // Skip the header line.
-                for(int i = 0; i< 5; i++)
-                {
-                    sr.ReadLine();
-                }
+                sr.ReadLine();
                 String line;
                 while ((line = sr.ReadLine()) != null)
                 {
                     string[] partCollection = line.Split(';');
 
-                    if(partCollection.Length <= 1)
+                    if (partCollection.Length != 23)
                     {
-                        continue;
+                        throw new InvalidDataException("Unexpected number of columns, a non-order table has been passed to the mapping function.");
                     }
 
                     string productName = partCollection[11];
-                    string extraIngredientList = partCollection[16];
+                    string extraIngredientList = partCollection[17];
 
                     if (productName.Length > 0)
                     {
@@ -55,9 +52,8 @@ namespace MarioPizzaImport
                     if (extraIngredientList.Length > 0)
                     {
                         string[] ingredientNameCollection = extraIngredientList.Split(',');
-                        foreach (string item in ingredientNameCollection)
+                        foreach (string ingredientName in ingredientNameCollection)
                         {
-                            String ingredientName = item.Trim();
                             // If the ingredient already exists, or there is a mapping for it already, no need to map it again.
                             ingredient ingredient = database.ingredients.SingleOrDefault(i => i.name == ingredientName);
                             mapping existingMapping = database.mappings.SingleOrDefault(i => i.originalname == ingredientName && i.isingredient == true);
