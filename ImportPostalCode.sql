@@ -44,6 +44,8 @@ AS
         END
 
         CLOSE CursorPostalCodeImport;
+        
+        TRUNCATE TABLE postalcode_import;
     END
 go
 
