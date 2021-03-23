@@ -1,51 +1,36 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using MarioPizzaImport.Command;
 
 namespace MarioPizzaImport
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] allInputString)
         {
-            var database = new dbi298845_prangersEntities();
-            countrycode countrycode = getOrCreateDefaultCountryCode(database);
+            // TODO: format = "import.exe --import-postalcode="something"
 
-            PostalCodeImporter postalCodeImporter = new PostalCodeImporter(database, countrycode);
-            postalCodeImporter.Run(@"C:\Users\shnva\Desktop\Postcode tabel.mdb");
+            dbi298845_prangersEntities database = new dbi298845_prangersEntities();
+            countrycode countrycode = GetOrCreateDefaultCountryCode(database);
 
-            StoreImporter storeImporter = new StoreImporter(database, countrycode);
-            storeImporter.Run(@"C:\Users\shnva\Desktop\Winkels Mario.txt");
-
-            BottomImporter bottomImporter = new BottomImporter(database, countrycode);
-            bottomImporter.Run(@"C:\Users\Peter\Downloads\MarioData\pizzabodems.csv");
-
-            ProductImporter productImporter = new ProductImporter(database, countrycode);
-            productImporter.Run(@"C:\Users\Peter\Downloads\MarioData\overige producten.csv");
-
-            //Import individual ingredients
-            IngredientImporter extraIngredientImporter = new IngredientImporter(database, countrycode);
-            extraIngredientImporter.Run(@"C:\Users\Peter\Downloads\MarioData\Extra Ingredienten.csv");
-
-            //Import the relation between pizza and ingredients.
-            PizzaIngredientImporter ingredientImporter = new PizzaIngredientImporter(database, countrycode);
-            ingredientImporter.Run(@"C:\Users\Peter\Downloads\MarioData\pizza_ingredienten.csv");
-
-            /**
-             * Once all other changes are merged, we need to make this into a proper console application with multiple commands. Since the mapping should
-             * be executed after importing products and ingredients.
-             * Then the records in the mapping table need to be mapped by hand before orders are imported.
-             */
-            MappingParser mappingParser = new MappingParser(database);
-            mappingParser.ParseMappingFromOrderFile(@"C:\Users\Peter\Downloads\MarioData\MarioOrderData01_10000.csv");
-
-            Console.WriteLine("Done...");
+            // Create the router to route the commands through.
+            CommandRouter commandRouter = new CommandRouter(database, countrycode);
+            
+            // Register all possible commands.
+            commandRouter.Register(new CommandImportPostalCode());
+            commandRouter.Register(new CommandImportStore());
+            commandRouter.Register(new CommandImportBottom());
+            commandRouter.Register(new CommandImportProduct());
+            commandRouter.Register(new CommandImportIngredient());
+            commandRouter.Register(new CommandParseMapping());
+            
+            // Execute the command
+            commandRouter.Execute(allInputString);
+            
             Console.ReadKey();
         }
 
-        private static countrycode getOrCreateDefaultCountryCode(dbi298845_prangersEntities db)
+        private static countrycode GetOrCreateDefaultCountryCode(dbi298845_prangersEntities db)
         {
             //check if countrycode exists, so we can create a bottomprice for NL stores
             var countrycode = db.countrycodes.SingleOrDefault(i => i.code == "NL");
