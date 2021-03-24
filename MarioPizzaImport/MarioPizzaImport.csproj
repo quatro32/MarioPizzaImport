@@ -77,7 +77,6 @@
     <Compile Include="ingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="IngredientImporter.cs" />
     <Compile Include="ingredientprice.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
