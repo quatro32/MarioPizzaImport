@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace MarioPizzaImport.Command
@@ -35,25 +36,40 @@ namespace MarioPizzaImport.Command
             
             foreach (string commandString in allInputString)
             {
-                List<string> allCommandPart = commandString.Split(new []{' ', '='}, StringSplitOptions.RemoveEmptyEntries).ToList();
+                string commandStringFormatted = commandString.Replace("--", "");
+                List<string> allCommandPart = commandStringFormatted.Split(new []{'='}, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                if (allCommandPart.Count <= 2)
+                if (allCommandPart.Count == 2)
                 {
                     string commandName = allCommandPart[0];
-                    string commandArgument = allCommandPart.Count == 2 ? allCommandPart[1] : "";
+                    string filePathArgument = allCommandPart.Count == 2 ? allCommandPart[1] : "";
 
                     // Add the command with the path the the list that should be executed.
                     // That way we can first resolve the entire list of commands before starting the import operations.
-                    allCommandToExecute.Add(
-                        new Tuple<string, Command>(commandArgument, FindCommand(commandName))
-                    );
+                    Command commandToExecute = FindCommand(commandName);
+
+                    if (commandToExecute != null && File.Exists(filePathArgument))
+                    {
+                        allCommandToExecute.Add(
+                            new Tuple<string, Command>(filePathArgument, commandToExecute)
+                        );
+                    } else if (!File.Exists(filePathArgument)) {
+                        Console.WriteLine("File '{0}' doesnt exist, please provide a valid path.", filePathArgument);
+                    }
                 }
                 else
                 {
-                    throw new Exception(string.Format("Input string '{0}' is invalid.", commandString));
+                    Console.WriteLine("Command '{0}' is invalid.", commandStringFormatted);
                 }
             }
-            
+
+            // If there are no commands to execute or one of the entered strings didn't result in a command, print help.
+            if (allCommandToExecute.Count == 0 || allCommandToExecute.Count != allInputString.Length)
+            {
+                PrintHelp();
+                return;
+            }
+
             // Command parsing worked, now execute all commands.
             foreach (Tuple<string, Command> fileCommandTuple in allCommandToExecute)
             {
@@ -64,11 +80,6 @@ namespace MarioPizzaImport.Command
                 commandImporter?.Initialize(_database, _countrycode);
 
                 command.Execute(fileCommandTuple.Item1);
-            }
-
-            if (allCommandToExecute.Count == 0)
-            {
-                PrintHelp();
             }
         }
 
