@@ -58,10 +58,20 @@
     <Compile Include="bottom.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Importers\BottomImporter.cs" />
     <Compile Include="bottomprice.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Command\Command.cs" />
+    <Compile Include="Command\CommandDatabase.cs" />
+    <Compile Include="Command\CommandImport.cs" />
+    <Compile Include="Command\CommandImportBottom.cs" />
+    <Compile Include="Command\CommandImportIngredient.cs" />
+    <Compile Include="Command\CommandImportPizzaIngredient.cs" />
+    <Compile Include="Command\CommandImportPostalCode.cs" />
+    <Compile Include="Command\CommandImportProduct.cs" />
+    <Compile Include="Command\CommandImportStore.cs" />
+    <Compile Include="Command\CommandParseMapping.cs" />
+    <Compile Include="Command\CommandRouter.cs" />
     <Compile Include="countrycode.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -71,14 +81,19 @@
     <Compile Include="deliverytype.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Importers\Base\Importer.cs" />
+    <Compile Include="Import\BottomImporter.cs" />
+    <Compile Include="Import\Importer.cs" />
+    <Compile Include="Import\IngredientImporter.cs" />
+    <Compile Include="Import\PostalCodeImporter.cs" />
+    <Compile Include="Import\ProductImporter.cs" />
+    <Compile Include="Import\ProductMapper.cs" />
+    <Compile Include="Import\StoreImporter.cs" />
     <Compile Include="import_log.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Importers\IngredientImporter.cs" />
     <Compile Include="ingredientprice.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -108,11 +123,9 @@
     <Compile Include="orderline.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Importers\PizzaIngredientImporter.cs" />
     <Compile Include="postalcode.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Importers\PostalCodeImporter.cs" />
     <Compile Include="postalcode_import.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -122,7 +135,6 @@
     <Compile Include="productcategory.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Importers\ProductImporter.cs" />
     <Compile Include="productingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -143,14 +155,12 @@
     <Compile Include="store.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Importers\StoreImporter.cs" />
     <Compile Include="township.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="user.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="ProductMapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
