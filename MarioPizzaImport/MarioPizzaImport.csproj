@@ -86,7 +86,7 @@
     <Compile Include="Import\IngredientImporter.cs" />
     <Compile Include="Import\PostalCodeImporter.cs" />
     <Compile Include="Import\ProductImporter.cs" />
-    <Compile Include="Import\ProductMapper.cs" />
+    <Compile Include="Import\ProductIngredientImport.cs" />
     <Compile Include="Import\StoreImporter.cs" />
     <Compile Include="import_log.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>

@@ -15,16 +15,16 @@ namespace MarioPizzaImport.Import
         override protected int Import(string filePath)
         {
             List<productingredient> allIngredients = new List<productingredient>();
-
-            using (Stream storeStream = new FileStream(filePath, FileMode.Open))
+            List<string> allLineIngredientInformation = new List<string>();
+            using (Stream productIngredientStream = new FileStream(filePath, FileMode.Open))
             {
-                using (StreamReader storeReader = new StreamReader(storeStream))
+                using (StreamReader productIngredientReader = new StreamReader(productIngredientStream))
                 {
-                    List<string> allLineIngredientInformation = new List<string>();
-
                     string lineIngredientInformation = null;
 
-                    while ((lineIngredientInformation = storeReader.ReadLine()) != null)
+                    // Skip header line.
+                    productIngredientReader.ReadLine();
+                    while ((lineIngredientInformation = productIngredientReader.ReadLine()) != null)
                     {
                         lineIngredientInformation = lineIngredientInformation.Trim();
 
@@ -36,12 +36,14 @@ namespace MarioPizzaImport.Import
 
                     if (allLineIngredientInformation.Count != 0)
                     {
-                        productingredient productIngredient = CreateIngredientFromAllLine(allLineIngredientInformation);
-                        if (productIngredient != null)
+                        foreach(string lineInformation in allLineIngredientInformation)
                         {
-                            allIngredients.Add(productIngredient);
+                            productingredient productIngredient = CreateIngredientFromAllLine(lineInformation);
+                            if (productIngredient != null)
+                            {
+                                allIngredients.Add(productIngredient);
+                            }
                         }
-                        allLineIngredientInformation.Clear();
                     }
                 }
             }
@@ -63,11 +65,11 @@ namespace MarioPizzaImport.Import
             return allIngredients.Count;
         }
 
-        productingredient CreateIngredientFromAllLine(List<string> allLineIngredientInformation)
+        productingredient CreateIngredientFromAllLine(string lineInformation)
         {
-
-            string productName = allLineIngredientInformation[2];
-            string ingredientName = allLineIngredientInformation[10];
+            string[] parts = lineInformation.Split(';');
+            string productName = parts[2];
+            string ingredientName = parts[10];
 
             product product = database.products.SingleOrDefault(s => s.name == productName);
             ingredient ingredient = database.ingredients.SingleOrDefault(s => s.name == ingredientName);
@@ -95,7 +97,7 @@ namespace MarioPizzaImport.Import
             productingredient productingredient = new productingredient();
 
             productingredient.product = product;
-            productingredient.amount = Convert.ToInt32(allLineIngredientInformation[9]);
+            productingredient.amount = Convert.ToInt32(lineInformation[9]);
 
             productingredient.ingredient = ingredient;
 
