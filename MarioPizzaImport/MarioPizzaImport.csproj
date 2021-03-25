@@ -58,6 +58,7 @@
     <Compile Include="bottom.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="BottomImporter.cs" />
     <Compile Include="bottomprice.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -107,6 +108,7 @@
     <Compile Include="orderline.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="PizzaIngredientImporter.cs" />
     <Compile Include="postalcode.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -120,6 +122,7 @@
     <Compile Include="productcategory.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ProductImporter.cs" />
     <Compile Include="productingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
