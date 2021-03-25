@@ -58,7 +58,7 @@
     <Compile Include="bottom.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="BottomImporter.cs" />
+    <Compile Include="Importers\BottomImporter.cs" />
     <Compile Include="bottomprice.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -71,14 +71,14 @@
     <Compile Include="deliverytype.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Importer.cs" />
+    <Compile Include="Importers\Base\Importer.cs" />
     <Compile Include="import_log.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="IngredientImporter.cs" />
+    <Compile Include="Importers\IngredientImporter.cs" />
     <Compile Include="ingredientprice.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -108,11 +108,11 @@
     <Compile Include="orderline.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="PizzaIngredientImporter.cs" />
+    <Compile Include="Importers\PizzaIngredientImporter.cs" />
     <Compile Include="postalcode.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="PostalCodeImporter.cs" />
+    <Compile Include="Importers\PostalCodeImporter.cs" />
     <Compile Include="postalcode_import.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -122,7 +122,7 @@
     <Compile Include="productcategory.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="ProductImporter.cs" />
+    <Compile Include="Importers\ProductImporter.cs" />
     <Compile Include="productingredient.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
@@ -143,7 +143,7 @@
     <Compile Include="store.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="StoreImporter.cs" />
+    <Compile Include="Importers\StoreImporter.cs" />
     <Compile Include="township.cs">
       <DependentUpon>MarioPizzaModel.tt</DependentUpon>
     </Compile>
