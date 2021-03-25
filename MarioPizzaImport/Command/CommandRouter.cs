@@ -32,6 +32,7 @@ namespace MarioPizzaImport.Command
 
         public void Execute(string[] allInputString)
         {
+            // List will contain all commands to executes. Commands are formatted as --import=path.
             List<Tuple<string, Command>> allCommandToExecute = new List<Tuple<string, Command>>();
             
             foreach (string commandString in allInputString)

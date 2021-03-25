@@ -8,8 +8,6 @@ namespace MarioPizzaImport
     {
         static void Main(string[] allInputString)
         {
-            // TODO: format = "import.exe --import-postalcode="something"
-
             dbi298845_prangersEntities database = new dbi298845_prangersEntities();
             countrycode countrycode = GetOrCreateDefaultCountryCode(database);
 
