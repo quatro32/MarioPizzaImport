@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.IO;
@@ -15,39 +16,43 @@ namespace MarioPizzaImport.Import
         override protected int Import(string filePath)
         {
             List<productingredient> allIngredients = new List<productingredient>();
-            List<string> allLineIngredientInformation = new List<string>();
-            using (Stream productIngredientStream = new FileStream(filePath, FileMode.Open))
+            List<DataRow> allLineIngredientInformation = new List<DataRow>();
+
+            // Create Table
+            DataTable productIngredients = new DataTable();
+
+            // Begin Excel
+            using (OleDbConnection localDbConnection = new OleDbConnection(string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=Excel 12.0;", filePath)))
             {
-                using (StreamReader productIngredientReader = new StreamReader(productIngredientStream))
+                localDbConnection.Open();
+
+                OleDbDataAdapter dataAdapter = new OleDbDataAdapter("select * from [Sheet1$]", localDbConnection);
+                dataAdapter.Fill(productIngredients);
+
+                localDbConnection.Close();
+            }
+            // End Excel
+
+
+            foreach (DataRow row in productIngredients.Rows)
+            {
+                 allLineIngredientInformation.Add(row);
+
+                if (allLineIngredientInformation.Count != 0)
                 {
-                    string lineIngredientInformation = null;
-
-                    // Skip header line.
-                    productIngredientReader.ReadLine();
-                    while ((lineIngredientInformation = productIngredientReader.ReadLine()) != null)
+                    foreach (DataRow lineInformation in allLineIngredientInformation)
                     {
-                        lineIngredientInformation = lineIngredientInformation.Trim();
-
-                        if (lineIngredientInformation.Length > 0)
+                        productingredient productIngredient = CreateIngredientFromAllLine(lineInformation);
+                        if (productIngredient != null)
                         {
-                            allLineIngredientInformation.Add(lineIngredientInformation);
-                        }
-                    }
-
-                    if (allLineIngredientInformation.Count != 0)
-                    {
-                        foreach(string lineInformation in allLineIngredientInformation)
-                        {
-                            productingredient productIngredient = CreateIngredientFromAllLine(lineInformation);
-                            if (productIngredient != null)
-                            {
-                                allIngredients.Add(productIngredient);
-                            }
+                            allIngredients.Add(productIngredient);
                         }
                     }
                 }
             }
 
+
+           
             List<string> allIngredientNames = new List<string>();
             allIngredients.ForEach(s => allIngredientNames.Add(s.ingredient.name));
 
@@ -65,11 +70,12 @@ namespace MarioPizzaImport.Import
             return allIngredients.Count;
         }
 
-        productingredient CreateIngredientFromAllLine(string lineInformation)
+        productingredient CreateIngredientFromAllLine(DataRow lineInformation)
         {
-            string[] parts = lineInformation.Split(';');
-            string productName = parts[2];
-            string ingredientName = parts[10];
+
+            string productName = (string)lineInformation.ItemArray[2];
+            string ingredientName = (string)lineInformation.ItemArray[10];
+            int ingredientAmount = Convert.ToInt32(lineInformation.ItemArray[9]);
 
             product product = database.products.SingleOrDefault(s => s.name == productName);
             ingredient ingredient = database.ingredients.SingleOrDefault(s => s.name == ingredientName);
@@ -97,7 +103,7 @@ namespace MarioPizzaImport.Import
             productingredient productingredient = new productingredient();
 
             productingredient.product = product;
-            productingredient.amount = Convert.ToInt32(lineInformation[9]);
+            productingredient.amount = ingredientAmount;
 
             productingredient.ingredient = ingredient;
 
