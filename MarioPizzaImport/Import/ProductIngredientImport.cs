@@ -132,7 +132,11 @@ namespace MarioPizzaImport.Import
             product.sauce = sauce;
 
             database.products.Add(product);
-            Console.WriteLine("New pizza {0} created with sauce {1}", (string)lineInformation.ItemArray[2], (string)lineInformation.ItemArray[11]);
+            Console.WriteLine(
+                "New pizza {0} created with sauce {1}",
+                (string)lineInformation.ItemArray[2],
+                (string)lineInformation.ItemArray[11]
+            );
             return product;
         }
     }

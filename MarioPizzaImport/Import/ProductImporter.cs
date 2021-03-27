@@ -88,6 +88,9 @@ namespace MarioPizzaImport.Import
             return insertedProducts;
         }
 
+        /**
+         * find or create a category. If a category is supplied for the second parameter, use it as a parent category.
+         */
         public productcategory findOrCreateCategory(string categoryName, productcategory category = null)
         {
             if(category == null)
