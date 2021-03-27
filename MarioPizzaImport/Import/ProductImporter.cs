@@ -38,30 +38,8 @@ namespace MarioPizzaImport.Import
                     bool spicy = parts[5].ToUpper() == "JA";
                     bool vegetarian = parts[6].ToUpper() == "JA";
 
-                    // Retrieve or create the top level category
-                    productcategory category = database.productcategories.SingleOrDefault(i => i.name == categoryName);
-                    if (category == null)
-                    {
-                        category = new productcategory();
-                        category.name = categoryName;
-                        database.productcategories.Add(category);
-                        Console.WriteLine("Added new top level category called {0}", categoryName);
-                        database.SaveChanges();
-                        category = database.productcategories.SingleOrDefault(i => i.name == categoryName);
-                    }
-
-                    // Retrieve or create the subcategory
-                    productcategory subcategory = database.productcategories.SingleOrDefault(i => i.name == subcategoryName && i.parentproductcategoryid == category.id);
-                    if (subcategory == null)
-                    {
-                        subcategory = new productcategory();
-                        subcategory.name = subcategoryName;
-                        subcategory.parentproductcategoryid = category.id;
-                        database.productcategories.Add(subcategory);
-                        Console.WriteLine("Added new child to category {0} called {1}", categoryName, subcategoryName);
-                        database.SaveChanges();
-                        subcategory = database.productcategories.SingleOrDefault(i => i.name == subcategoryName && i.parentproductcategoryid == category.id);
-                    }
+                    productcategory category = findOrCreateCategory(categoryName);
+                    productcategory subcategory = findOrCreateCategory(subcategoryName, category);
 
                     product product = database.products.SingleOrDefault(i => i.name == name);
                     if (product == null)
@@ -108,6 +86,40 @@ namespace MarioPizzaImport.Import
                 }
             }
             return insertedProducts;
+        }
+
+        public productcategory findOrCreateCategory(string categoryName, productcategory category = null)
+        {
+            if(category == null)
+            {
+                // Retrieve or create the top level category
+                category = database.productcategories.SingleOrDefault(i => i.name == categoryName);
+                if (category == null)
+                {
+                    category = new productcategory();
+                    category.name = categoryName;
+                    database.productcategories.Add(category);
+                    Console.WriteLine("Added new top level category called {0}", categoryName);
+                    database.SaveChanges();
+                    category = database.productcategories.SingleOrDefault(i => i.name == categoryName);
+                }
+
+                return category;
+            }
+
+                // Retrieve or create the subcategory
+                productcategory subcategory = database.productcategories.SingleOrDefault(i => i.name == categoryName && i.parentproductcategoryid == category.id);
+                if (subcategory == null)
+                {
+                    subcategory = new productcategory();
+                    subcategory.name = categoryName;
+                    subcategory.parentproductcategoryid = category.id;
+                    database.productcategories.Add(subcategory);
+                    Console.WriteLine("Added new child to category {0} called {1}", category.name, categoryName);
+                    database.SaveChanges();
+                    subcategory = database.productcategories.SingleOrDefault(i => i.name == categoryName && i.parentproductcategoryid == category.id);
+                }
+            return subcategory;
         }
     }
 }

@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
-using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MarioPizzaImport.Import
 {
     class ProductIngredientImport : Importer<productingredient>
     {
-        public ProductIngredientImport(dbi298845_prangersEntities database, countrycode countrycode) : base(database, countrycode) { }
+        public ProductIngredientImport(dbi298845_prangersEntities database, countrycode countrycode) : base(database, countrycode)
+        {
+            this.productImporter = new ProductImporter(database, countrycode);    
+        }
+        private ProductImporter productImporter;
 
         override protected int Import(string filePath)
         {
@@ -33,7 +35,6 @@ namespace MarioPizzaImport.Import
             }
             // End Excel
 
-
             foreach (DataRow row in productIngredients.Rows)
             {
                  allLineIngredientInformation.Add(row);
@@ -50,8 +51,6 @@ namespace MarioPizzaImport.Import
                     }
                 }
             }
-
-
            
             List<string> allIngredientNames = new List<string>();
             allIngredients.ForEach(s => allIngredientNames.Add(s.ingredient.name));
@@ -85,8 +84,7 @@ namespace MarioPizzaImport.Import
                 product = GetMappedProduct(productName);
                 if (product == null)
                 {
-                    Logger.Instance.LogError(filePath, "Could not find product named " + ingredientName);
-                    return null;
+                    product = this.createPizzaProduct(lineInformation);
                 }
             }
 
@@ -95,7 +93,7 @@ namespace MarioPizzaImport.Import
                 ingredient = GetMappedIngredient(ingredientName);
                 if (ingredient == null)
                 {
-                    Logger.Instance.LogError(filePath, String.Format("Could not find ingredient named {0} for product {1}", ingredientName, productName));
+                    Logger.Instance.LogError(filePath, String.Format("Could not find ingredient named {0} to add to product {1}", ingredientName, productName));
                     return null;
                 }
             }
@@ -108,6 +106,34 @@ namespace MarioPizzaImport.Import
             productingredient.ingredient = ingredient;
 
             return productingredient;
+        }
+
+        /**
+         * Create pizza products from the pizzaIngredient table. Also imports the sauce since the pizza_ingredient import file
+         * is the only source for both sauces and pizzas.
+         */
+        private product createPizzaProduct(DataRow lineInformation)
+        {
+            productcategory category = this.productImporter.findOrCreateCategory((string)lineInformation.ItemArray[0]);
+            product product = new product();
+            product.name = (string)lineInformation.ItemArray[2];
+            product.productcategory1 = this.productImporter.findOrCreateCategory((string)lineInformation.ItemArray[1], category);
+            product.description = (string)lineInformation.ItemArray[3];
+            product.isspicy = lineInformation.ItemArray[6].ToString().ToUpper() == "JA" ;
+            product.isvegetarian = lineInformation.ItemArray[7].ToString().ToUpper() == "JA";
+
+            productprice price = new productprice();
+            price.countrycode = this.countrycode;
+            price.price = Decimal.Parse(Regex.Replace((string)lineInformation.ItemArray[4], "[^0-9.]", "")); ;
+            price.product = product;
+
+            sauce sauce = new sauce();
+            sauce.name = (string)lineInformation.ItemArray[11];
+            product.sauce = sauce;
+
+            database.products.Add(product);
+            Console.WriteLine("New pizza {0} created with sauce {1}", (string)lineInformation.ItemArray[2], (string)lineInformation.ItemArray[11]);
+            return product;
         }
     }
 }
