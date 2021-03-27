@@ -20,6 +20,7 @@ namespace MarioPizzaImport
             commandRouter.Register(new CommandImportBottom());
             commandRouter.Register(new CommandImportProduct());
             commandRouter.Register(new CommandImportIngredient());
+            commandRouter.Register(new CommandImportPizzaIngredient());
             commandRouter.Register(new CommandParseMapping());
             
             // Execute the command

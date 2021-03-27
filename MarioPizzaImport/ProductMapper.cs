@@ -36,7 +36,7 @@ namespace MarioPizzaImport
 
                     if (allLineIngredientInformation.Count != 0)
                     {
-                        productingredient productIngredient = CreateIngredientFromAllLine(allLineIngredientInformation);
+                        productingredient productIngredient = CreateIngredientFromLine(lineIngredientInformation);
                         if (productIngredient != null)
                         {
                             allIngredients.Add(productIngredient);
@@ -47,12 +47,14 @@ namespace MarioPizzaImport
             }
 
             List<string> allIngredientNames = new List<string>();
+
             allIngredients.ForEach(s => allIngredientNames.Add(s.ingredient.name));
 
             List<productingredient> allExistingIngredients = database.productingredients.Where(s => allIngredientNames.Contains(s.ingredient.name)).ToList();
             List<productingredient> allNewIngredients = allIngredients.Where(s => allExistingIngredients.Where(existing => existing.ingredient.name.Equals(s.ingredient.name)).Count() == 0).ToList();
 
             database.productingredients.AddRange(allIngredients);
+
             database.SaveChanges();
 
             Console.WriteLine("Found {0} existing ingredients", allExistingIngredients.Count);
@@ -63,11 +65,15 @@ namespace MarioPizzaImport
             return allIngredients.Count;
         }
 
-        productingredient CreateIngredientFromAllLine(List<string> allLineIngredientInformation)
+        productingredient CreateIngredientFromLine(String ingredientLine)
         {
 
-            string productName = allLineIngredientInformation[2];
-            string ingredientName = allLineIngredientInformation[10];
+
+            string[] parts = ingredientLine.Split(';');
+
+            string productName = parts[2];
+            string ingredientName = parts[10];
+            string ingredientAmount = parts[9];
 
             product product = database.products.SingleOrDefault(s => s.name == productName);
             ingredient ingredient = database.ingredients.SingleOrDefault(s => s.name == ingredientName);
@@ -95,7 +101,8 @@ namespace MarioPizzaImport
             productingredient productingredient = new productingredient();
 
             productingredient.product = product;
-            productingredient.amount = Convert.ToInt32(allLineIngredientInformation[9]);
+
+            productingredient.amount = Int32.Parse(ingredientAmount);
 
             productingredient.ingredient = ingredient;
 
