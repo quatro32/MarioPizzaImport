@@ -1,98 +1,221 @@
-﻿using MarioPizzaImport.Import;
+﻿using EntityFramework.BulkInsert.Extensions;
+using MarioPizzaImport.Import;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MarioPizzaImport
 {
     public class OrderImporter : Importer<order>
     {
-        private IEnumerable<mapping> mappings;
+        private List<mapping> mappings = null;
+        private List<store> stores = null;
+        private List<deliverytype> deliveryTypes = null;
+        private List<product> products = null;
+        private List<sauce> sauces = null;
+        private List<bottom> bottoms = null;
+        private List<ingredient> ingredients = null;
 
         public OrderImporter(dbi298845_prangersEntities database, countrycode countrycode) : base(database, countrycode)
         {
-            //get all mapping, so we don't have to do a select-query easch itteration.
-            mappings = database.mappings.AsEnumerable();
+            database.Configuration.AutoDetectChangesEnabled = false;
+            mappings = database.mappings.ToList();
+            stores = database.stores.ToList();
+            deliveryTypes = database.deliverytypes.ToList();
+            products = database.products.ToList();
+            sauces = database.sauces.ToList();
+            bottoms = database.bottoms.ToList();
+            ingredients = database.ingredients.ToList();
         }
 
         protected override int Import(string filePath)
         {
             //Winkelnaam;Klantnaam;TelefoonNr;Email;Adres;Woonplaats;Besteldatum;AfleverType;AfleverDatum;AfleverMoment;Product;PizzaBodem;PizzaSaus;Prijs;Bezorgkosten;Aantal;Extra Ingrediënten;Prijs Extra Ingrediënten;Regelprijs;Totaalprijs;Gebruikte Coupon;Coupon Korting;Te Betalen
             List<order> orders = new List<order>();
-
+            List<coupon> coupons = database.coupons.ToList();
             using (StreamReader sr = new StreamReader(filePath))
             {
                 int row = 1;
+                int count = 0;
                 String line;
                 order order = null;
                 while ((line = sr.ReadLine()) != null)
                 {
-                    if (row > 6 && line != string.Empty)
+                    if (row >= 6 && line != string.Empty)
                     {
                         string[] paths = line.Split(';');
                         if (paths[0] != string.Empty)
                         {
+                            if (order != null)
+                            {
+                                orders.Add(order);
+                                count++;
+                                //if (count % 10000 == 0)
+                                //{
+                                //    database.orders.AddRange(orders);
+                                //    database.SaveChanges();
+                                //    orders.Clear();
+                                //    Console.WriteLine("[INFO] Saved 1000 orders to database!");
+                                //}
+                                Console.WriteLine("[INFO] Added order to orders. Current amount: {0}", count);
+                            }
                             order = new order();
 
-                            store store = database.stores.SingleOrDefault(i => i.name.ToUpper() == paths[0].ToUpper());
-                            order.store = store ?? throw new Exception(string.Format("Store {0} does not exists!", paths[0]));
+                            string storeName = paths[0];
+                            string storeNameUppercased = storeName.ToUpper();
+                            store store = stores.SingleOrDefault(i => i.name.ToUpper() == storeNameUppercased);
+                            if (store == null)
+                            {
+                                Logger.Instance.LogError(filePath, string.Format("Store {0} does not exists on line {1}!", storeName, row));
+                                continue;
+                            }
+                            order.store = store;
 
                             order.clientname = paths[1];
                             order.phonenumber = paths[2];
-                            //add email field to order table, path[3]
-                            //add address entity to order, get postalcode from database by using a lookup query, paths[4],paths[5]
+                            order.email = paths[3].ToLower();
+
+                            order.address = new address()
+                            {
+                                countrycode = countrycode.code,
+                                street = Regex.Replace(paths[4], "[^A-Z a-z]", ""),
+                                number = Regex.Replace(paths[4], "[^0-9]", "")
+                            };
+
                             order.datecreated = GetDateTimeFromLongDateString(paths[6]);
 
-                            deliverytype deliverytype = database.deliverytypes.SingleOrDefault(i => i.name.ToUpper() == paths[7].ToUpper());
-                            order.deliverytype = deliverytype ?? throw new Exception(string.Format("Deliverytype {0} does not exists!", paths[7]));
+                            string deliveryCostField = paths[14].Trim();
+                            if (!string.IsNullOrEmpty(deliveryCostField))
+                            {
+                                order.deliverycost = Decimal.Parse(Regex.Replace(deliveryCostField, "[^0-9.]", "")) / 100;
+                            }
 
-                            order.datedelivered = GetDateTimeFromLongDateString(paths[8], paths[9]);
-                            //add deliverycosts to order table
+                            string deliveryType = paths[7];
+                            string deliveryTypeUppercased = deliveryType.ToUpper();
+                            deliverytype deliverytype = deliveryTypes.SingleOrDefault(i => i.name.ToUpper() == deliveryTypeUppercased);
+                            if (deliverytype == null)
+                            {
+                                Logger.Instance.LogError(filePath, string.Format("Deliverytype {0} does not exists on line {1}!", deliveryType, row));
+                                continue;
+                            }
+                            order.deliverytype = deliverytype;
+
+                            if (paths[9].Contains("soon"))
+                            {
+                                order.datedelivered = order.datecreated;
+                            }
+                            else
+                            {
+                                order.datedelivered = GetDateTimeFromLongDateString(paths[8], paths[9]);
+                            }
+
+                            //TODO: Proper
+                            order.preferredtime = order.datecreated;
+
+                            string orderPrice = paths[19];
+                            if (!string.IsNullOrEmpty(orderPrice))
+                            {
+                                order.price = Decimal.Parse(Regex.Replace(orderPrice, "[^0-9.]", "")) / 100;
+                            }
+
+                            string couponField = paths[20];
+                            if (!string.IsNullOrEmpty(couponField))
+                            {
+                                coupon coupon = coupons.SingleOrDefault(i => i.description == couponField);
+                                if (coupon == null)
+                                {
+                                    coupon = new coupon();
+                                    coupon.description = Encoding.UTF8.GetString(Encoding.Default.GetBytes(couponField));
+                                    coupon.startdate = DateTime.Now;
+                                    coupon.enddate = DateTime.Now;
+                                    coupon.code = "0000";
+                                    coupons.Add(coupon);
+                                }
+                                order.coupon = coupon;
+                            }
                         }
 
                         orderline orderline = new orderline();
-                        orderline.order = order;
 
                         //search if product exists
-                        product product = database.products.SingleOrDefault(i => i.name ==  GetMappedValue(paths[10], false));
-                        orderline.product = product ?? throw new Exception(string.Format("Product {0} does not exists!", paths[10]));
-                        //after we delete exception, create product and also create/select product type
+                        string mappedProductName = this.GetMappedValue(paths[10], false);
+                        if (mappedProductName == string.Empty)
+                        {
+                            continue;
+                        }
+                        product product = products.SingleOrDefault(i => i.name == mappedProductName);
+                        if (product == null)
+                        {
+                            Logger.Instance.LogError(filePath, string.Format("Product {0} does not exists on line {1}!", mappedProductName, row));
+                            continue;
+                        }
+                        orderline.product = product;
+
+
+                        string mappedBottomName = this.GetMappedValue(paths[11], false);
+                        bottom bottom = bottoms.SingleOrDefault(i => i.name == mappedBottomName);
+                        if (bottom == null)
+                        {
+                            Logger.Instance.LogError(filePath, string.Format("Bottom {0} does not exists on line {1}!", mappedBottomName, row));
+                            continue;
+                        }
+                        orderline.bottom = bottom;
+
+                        string mappedSauceName = this.GetMappedValue(paths[12], false);
+                        //
+                        // CHANGE TO SINGLEORDEFAULT!!!!
+                        //
+                        sauce sauce = sauces.FirstOrDefault(i => i.name == mappedSauceName);
+                        if (sauce == null)
+                        {
+                            Logger.Instance.LogError(filePath, string.Format("Sauce {0} does not exists on line {1}!", mappedSauceName, row));
+                            continue;
+                        }
+                        orderline.product.sauce = sauce;
+
+                        orderline.price = Decimal.Parse(Regex.Replace(paths[13], "[^0-9.]", "")) / 100;
 
                         orderline.amount = Convert.ToInt32(paths[15]);
 
-                        string[] extraIngredients = paths[16].Split(',');
+                        string orderlinePrice = paths[18];
+                        if (!string.IsNullOrEmpty(orderlinePrice))
+                        {
+                            orderline.price = Decimal.Parse(Regex.Replace(orderlinePrice, "[^0-9.]", "")) / 100;
+                        }
+
+                        string[] extraIngredients = paths[16].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (extraIngredients.Length > 0)
                         {
                             foreach (var ei in extraIngredients)
                             {
-                                ingredient ingredient = database.ingredients.SingleOrDefault(i => i.name == GetMappedValue(ei, true));
-                                
+                                string mappedIngredientName = this.GetMappedValue(ei.Trim(), true);
+                                ingredient ingredient = ingredients.SingleOrDefault(i => i.name == mappedIngredientName);
+                                //TODO: look for mapping, else create new/exception
                                 productorderingredient productorderingredient = new productorderingredient();
-                                productorderingredient.ingredient = ingredient ?? throw new Exception(string.Format("Ingredient {0} does not exists!", ei));
+                                if (ingredient == null)
+                                {
+                                    Logger.Instance.LogError(filePath, string.Format("Ingredient {0} does not exists on line {1}!", mappedIngredientName, row));
+                                    continue;
+                                }
+                                productorderingredient.ingredient = ingredient;
                                 productorderingredient.orderline = orderline;
                             }
                         }
-
+                        order.orderlines.Add(orderline);
                     }
                     row++;
                 }
             }
 
-            //database.BulkInsert<order>(orders, );
+            database.orders.AddRange(orders);
+            Console.WriteLine("[INFO] Saving " + orders.Count + " records to database...");
+            //database.SaveChanges();
+            database.BulkInsert<order>(orders, 5000);
             return orders.Count;
-        }
-
-        private string GetMappedValue(string value, bool isIngredient)
-        {
-            mapping mapping = mappings.SingleOrDefault(i => i.originalname.ToLower() == value.Trim().ToLower() && i.mappedto != string.Empty && i.isingredient == isIngredient);
-            if (mapping != null)
-            {
-                return mapping.mappedto;
-            }
-            return value;
         }
 
         private int GetMonthNumberFromString(string monthString)
@@ -137,6 +260,16 @@ namespace MarioPizzaImport
         private DateTime GetDateTimeFromLongDateString(string dateString, string timeString)
         {
             return GetDateTimeFromLongDateString(dateString) + TimeSpan.Parse(timeString);
+        }
+
+        private string GetMappedValue(string value, bool isIngredient)
+        {
+            mapping mapping = mappings.SingleOrDefault(i => i.originalname.ToLower() == value.Trim().ToLower() && i.mappedto != string.Empty && i.isingredient == isIngredient);
+            if (mapping != null && mapping.mappedto != "" && mapping.mappedto != null)
+            {
+                return mapping.mappedto;
+            }
+            return value;
         }
     }
 }

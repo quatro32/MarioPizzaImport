@@ -35,6 +35,9 @@
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework.BulkInsert, Version=6.0.1.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.BulkInsert-ef6.6.0.1.2\lib\net45\EntityFramework.BulkInsert.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
@@ -84,6 +87,8 @@
     <Compile Include="Import\BottomImporter.cs" />
     <Compile Include="Import\Importer.cs" />
     <Compile Include="Import\IngredientImporter.cs" />
+    <Compile Include="Import\OrderImporter.cs" />
+    <Compile Include="Import\PizzaIngredientImporter.cs" />
     <Compile Include="Import\PostalCodeImporter.cs" />
     <Compile Include="Import\ProductImporter.cs" />
     <Compile Include="Import\ProductIngredientImport.cs" />
@@ -188,6 +193,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="database\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

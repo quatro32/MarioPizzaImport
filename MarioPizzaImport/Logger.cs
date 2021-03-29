@@ -39,6 +39,11 @@ namespace MarioPizzaImport
             this.SaveLog("CORRECTION", fileName, string.Format("Corrected {0} to {1} during import.", stringInput, stringCorrected));
         }
 
+        public void LogInfo(string fileName, string message)
+        {
+            this.SaveLog("INFO", fileName, message);
+        }
+
         private void SaveLog(string type, string fileName, string errorString)
         {
             Console.WriteLine("[{0}] {1}", type, errorString);

@@ -49,7 +49,7 @@
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="code" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="startdate" Type="datetime" Nullable="false" />
-          <Property Name="enddate" Type="datetime" Nullable="false" />
+          <Property Name="enddate" Type="datetime" />
           <Property Name="amount" Type="decimal" Precision="5" Scale="2" />
           <Property Name="percentage" Type="decimal" Precision="5" Scale="2" />
           <Property Name="applyon" Type="int" />
@@ -88,7 +88,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ingredientid" Type="int" Nullable="false" />
           <Property Name="price" Type="decimal" Precision="4" Scale="2" Nullable="false" />
           <Property Name="startdate" Type="datetime" Nullable="false" />
@@ -120,10 +120,11 @@
           <Property Name="deliverytypeid" Type="int" Nullable="false" />
           <Property Name="addressid" Type="int" Nullable="false" />
           <Property Name="storeid" Type="int" Nullable="false" />
-          <Property Name="preferredtime" Type="datetime" Nullable="false" />
+          <Property Name="preferredtime" Type="datetime" />
           <Property Name="price" Type="decimal" Precision="5" Scale="2" Nullable="false" />
           <Property Name="discount" Type="decimal" Precision="5" Scale="2" Nullable="false" />
           <Property Name="email" Type="varchar" MaxLength="255" />
+          <Property Name="deliverycost" Type="decimal" Precision="5" Scale="2" />
         </EntityType>
         <EntityType Name="orderline">
           <Key>
@@ -841,7 +842,7 @@ warning 6002: The table/view 'dbi298845_prangers.dbo.postalcode_import' does not
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="code" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="startdate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="enddate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="enddate" Type="DateTime" Precision="3" />
           <Property Name="amount" Type="Decimal" Precision="5" Scale="2" />
           <Property Name="percentage" Type="Decimal" Precision="5" Scale="2" />
           <Property Name="applyon" Type="Int32" />
@@ -903,7 +904,7 @@ warning 6002: The table/view 'dbi298845_prangers.dbo.postalcode_import' does not
           <Property Name="deliverytypeid" Type="Int32" Nullable="false" />
           <Property Name="addressid" Type="Int32" Nullable="false" />
           <Property Name="storeid" Type="Int32" Nullable="false" />
-          <Property Name="preferredtime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="preferredtime" Type="DateTime" Precision="3" />
           <Property Name="price" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
           <Property Name="discount" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
           <NavigationProperty Name="address" Relationship="Self.fk_order_address" FromRole="order" ToRole="address" />
@@ -913,6 +914,7 @@ warning 6002: The table/view 'dbi298845_prangers.dbo.postalcode_import' does not
           <NavigationProperty Name="store" Relationship="Self.fk_order_store" FromRole="order" ToRole="store" />
           <NavigationProperty Name="orderlines" Relationship="Self.fk_productorder_order" FromRole="order" ToRole="orderline" />
           <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="deliverycost" Type="Decimal" Precision="5" Scale="2" />
         </EntityType>
         <EntityType Name="orderline">
           <Key>
@@ -1709,6 +1711,7 @@ warning 6002: The table/view 'dbi298845_prangers.dbo.postalcode_import' does not
           <EntitySetMapping Name="orders">
             <EntityTypeMapping TypeName="dbi298845_prangersModel.order">
               <MappingFragment StoreEntitySet="order">
+                <ScalarProperty Name="deliverycost" ColumnName="deliverycost" />
                 <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="datecreated" ColumnName="datecreated" />
