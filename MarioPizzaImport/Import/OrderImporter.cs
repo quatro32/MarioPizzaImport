@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace MarioPizzaImport
 {
@@ -212,9 +211,17 @@ namespace MarioPizzaImport
             }
 
             database.orders.AddRange(orders);
+
             Console.WriteLine("[INFO] Saving " + orders.Count + " records to database...");
-            //database.SaveChanges();
-            database.BulkInsert<order>(orders, 5000);
+
+            DateTime before = DateTime.Now;
+            database.SaveChanges();
+
+            DateTime after = DateTime.Now;
+            TimeSpan ts = after.Subtract(before);
+            Console.WriteLine(string.Format("Completed after {0}:{1}:{2}:{3}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds));
+
+            //database.BulkInsert<order>(orders, 5000);
             return orders.Count;
         }
 
