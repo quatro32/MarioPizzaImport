@@ -127,8 +127,7 @@ namespace MarioPizzaImport.Import
             price.price = Decimal.Parse(Regex.Replace((string)lineInformation.ItemArray[4], "[^0-9.]", "")); ;
             price.product = product;
 
-            sauce sauce = new sauce();
-            sauce.name = (string)lineInformation.ItemArray[11];
+            sauce sauce = this.GetOrCreateSauce((string)lineInformation.ItemArray[11]);
             product.sauce = sauce;
 
             database.products.Add(product);
@@ -138,6 +137,17 @@ namespace MarioPizzaImport.Import
                 (string)lineInformation.ItemArray[11]
             );
             return product;
+        }
+
+        private sauce GetOrCreateSauce(string saucename)
+        {
+            sauce sauce = this.database.sauces.SingleOrDefault(s => s.name == saucename);
+            if (sauce == null)
+            {
+                sauce = new sauce();
+                sauce.name = saucename;
+            }
+            return sauce;
         }
     }
 }
