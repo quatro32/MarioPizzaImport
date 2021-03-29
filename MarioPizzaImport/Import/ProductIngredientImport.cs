@@ -37,18 +37,10 @@ namespace MarioPizzaImport.Import
 
             foreach (DataRow row in productIngredients.Rows)
             {
-                 allLineIngredientInformation.Add(row);
-
-                if (allLineIngredientInformation.Count != 0)
+                productingredient productIngredient = CreateIngredientFromAllLine(row);
+                if (productIngredient != null)
                 {
-                    foreach (DataRow lineInformation in allLineIngredientInformation)
-                    {
-                        productingredient productIngredient = CreateIngredientFromAllLine(lineInformation);
-                        if (productIngredient != null)
-                        {
-                            allIngredients.Add(productIngredient);
-                        }
-                    }
+                    allIngredients.Add(productIngredient);
                 }
             }
            
@@ -56,15 +48,24 @@ namespace MarioPizzaImport.Import
             allIngredients.ForEach(s => allIngredientNames.Add(s.ingredient.name));
 
             List<productingredient> allExistingIngredients = database.productingredients.Where(s => allIngredientNames.Contains(s.ingredient.name)).ToList();
-            List<productingredient> allNewIngredients = allIngredients.Where(s => allExistingIngredients.Where(existing => existing.ingredient.name.Equals(s.ingredient.name)).Count() == 0).ToList();
+            Dictionary<string, productingredient> allNewIngredients = new Dictionary<string, productingredient>();
 
-            database.productingredients.AddRange(allIngredients);
+            allIngredients.Where(s => allExistingIngredients.Where(existing => existing.ingredient.name.Equals(s.ingredient.name)).Count() == 0).ToList().ForEach(productingredient =>
+            {
+                if (allNewIngredients.ContainsKey(productingredient.ingredient.name))
+                {
+                    allNewIngredients.Add(productingredient.ingredient.name, productingredient);
+                }
+            });
+
+
+            database.productingredients.AddRange(allNewIngredients.Values.ToList());
             database.SaveChanges();
 
             Console.WriteLine("Found {0} existing ingredients", allExistingIngredients.Count);
             Console.WriteLine("Found {0} new ingredients", allNewIngredients.Count);
 
-            allNewIngredients.ForEach(s => Console.WriteLine("Imported new ingredient {0}", s.ingredient.name));
+            allNewIngredients.Keys.ToList().ForEach(i => Console.WriteLine("Imported new ingredient {0}", i));
 
             return allIngredients.Count;
         }
@@ -84,7 +85,7 @@ namespace MarioPizzaImport.Import
                 product = GetMappedProduct(productName);
                 if (product == null)
                 {
-                    product = this.createPizzaProduct(lineInformation);
+                    product = CreatePizzaProduct(lineInformation);
                 }
             }
 
@@ -112,7 +113,7 @@ namespace MarioPizzaImport.Import
          * Create pizza products from the pizzaIngredient table. Also imports the sauce since the pizza_ingredient import file
          * is the only source for both sauces and pizzas.
          */
-        private product createPizzaProduct(DataRow lineInformation)
+        private product CreatePizzaProduct(DataRow lineInformation)
         {
             productcategory category = this.productImporter.findOrCreateCategory((string)lineInformation.ItemArray[0]);
             product product = new product();
@@ -124,7 +125,7 @@ namespace MarioPizzaImport.Import
 
             productprice price = new productprice();
             price.countrycode = this.countrycode;
-            price.price = Decimal.Parse(Regex.Replace((string)lineInformation.ItemArray[4], "[^0-9.]", "")); ;
+            price.price = Decimal.Parse(Regex.Replace(lineInformation.ItemArray[4].ToString(), "[^0-9.]", ""));
             price.product = product;
 
             sauce sauce = new sauce();
@@ -137,6 +138,9 @@ namespace MarioPizzaImport.Import
                 (string)lineInformation.ItemArray[2],
                 (string)lineInformation.ItemArray[11]
             );
+
+            database.SaveChanges();
+
             return product;
         }
     }

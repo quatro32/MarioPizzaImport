@@ -18,6 +18,7 @@ namespace MarioPizzaImport
             commandRouter.Register(new CommandImportPostalCode());
             commandRouter.Register(new CommandImportStore());
             commandRouter.Register(new CommandImportBottom());
+            commandRouter.Register(new CommandImportOrder());
             commandRouter.Register(new CommandImportProduct());
             commandRouter.Register(new CommandImportIngredient());
             commandRouter.Register(new CommandImportPizzaIngredient());

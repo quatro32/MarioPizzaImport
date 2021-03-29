@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MarioPizzaImport
@@ -35,21 +36,51 @@ namespace MarioPizzaImport
                         string[] paths = line.Split(';');
                         if (paths[0] != string.Empty)
                         {
+                            if (order != null)
+                            {
+                                // TODO: range.
+                                this.database.orders.Add(order);
+
+                                // Save to database
+                                this.database.SaveChanges();
+                            }
+
                             order = new order();
 
-                            store store = database.stores.SingleOrDefault(i => i.name.ToUpper() == paths[0].ToUpper());
+                            string storeNameUppercased = paths[0].ToUpper();
+                            store store = database.stores.SingleOrDefault(i => i.name.ToUpper() == storeNameUppercased);
                             order.store = store ?? throw new Exception(string.Format("Store {0} does not exists!", paths[0]));
 
                             order.clientname = paths[1];
                             order.phonenumber = paths[2];
+                            order.email = paths[3];
                             //add email field to order table, path[3]
                             //add address entity to order, get postalcode from database by using a lookup query, paths[4],paths[5]
+
+                            order.address = new address()
+                            {
+                                countrycode = countrycode.code,
+                                street = Regex.Replace(paths[4], "[^A-Z a-z]", ""),
+                                number = Regex.Replace(paths[4], "[^0-9]", "")
+                            };
+
                             order.datecreated = GetDateTimeFromLongDateString(paths[6]);
 
-                            deliverytype deliverytype = database.deliverytypes.SingleOrDefault(i => i.name.ToUpper() == paths[7].ToUpper());
+                            string deliveryTypeUppercased = paths[7].ToUpper();
+                            deliverytype deliverytype = database.deliverytypes.SingleOrDefault(i => i.name.ToUpper() == deliveryTypeUppercased);
                             order.deliverytype = deliverytype ?? throw new Exception(string.Format("Deliverytype {0} does not exists!", paths[7]));
 
-                            order.datedelivered = GetDateTimeFromLongDateString(paths[8], paths[9]);
+                            if (paths[9].Contains("soon"))
+                            {
+                                order.datedelivered = order.datecreated;
+                            }
+                            else
+                            {
+                                order.datedelivered = GetDateTimeFromLongDateString(paths[8], paths[9]);
+                            }
+
+                            //TODO: Proper
+                            order.preferredtime = order.datecreated;
                             //add deliverycosts to order table
                         }
 
@@ -57,18 +88,20 @@ namespace MarioPizzaImport
                         orderline.order = order;
 
                         //search if product exists
-                        product product = database.products.SingleOrDefault(i => i.name ==  GetMappedValue(paths[10], false));
+                        string mappedProductName = this.GetMappedValue(paths[10], false);
+                        product product = database.products.SingleOrDefault(i => i.name == mappedProductName);
                         orderline.product = product ?? throw new Exception(string.Format("Product {0} does not exists!", paths[10]));
                         //after we delete exception, create product and also create/select product type
 
                         orderline.amount = Convert.ToInt32(paths[15]);
 
-                        string[] extraIngredients = paths[16].Split(',');
+                        string[] extraIngredients = paths[16].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (extraIngredients.Length > 0)
                         {
                             foreach (var ei in extraIngredients)
                             {
-                                ingredient ingredient = database.ingredients.SingleOrDefault(i => i.name == GetMappedValue(ei, true));
+                                string mappedIngredientName = this.GetMappedValue(ei.Trim(), true);
+                                ingredient ingredient = database.ingredients.SingleOrDefault(i => i.name == mappedIngredientName);
                                 
                                 productorderingredient productorderingredient = new productorderingredient();
                                 productorderingredient.ingredient = ingredient ?? throw new Exception(string.Format("Ingredient {0} does not exists!", ei));
@@ -76,6 +109,10 @@ namespace MarioPizzaImport
                             }
                         }
 
+                        if (order != null)
+                        {
+                            order.orderlines.Add(orderline);
+                        }
                     }
                     row++;
                 }
@@ -88,7 +125,7 @@ namespace MarioPizzaImport
         private string GetMappedValue(string value, bool isIngredient)
         {
             mapping mapping = mappings.SingleOrDefault(i => i.originalname.ToLower() == value.Trim().ToLower() && i.mappedto != string.Empty && i.isingredient == isIngredient);
-            if (mapping != null)
+            if (mapping != null && mapping.mappedto != "" && mapping.mappedto != null)
             {
                 return mapping.mappedto;
             }
