@@ -66,6 +66,7 @@
     <Compile Include="Command\CommandImport.cs" />
     <Compile Include="Command\CommandImportBottom.cs" />
     <Compile Include="Command\CommandImportIngredient.cs" />
+    <Compile Include="Command\CommandImportOrder.cs" />
     <Compile Include="Command\CommandImportPizzaIngredient.cs" />
     <Compile Include="Command\CommandImportPostalCode.cs" />
     <Compile Include="Command\CommandImportProduct.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Import\BottomImporter.cs" />
     <Compile Include="Import\Importer.cs" />
     <Compile Include="Import\IngredientImporter.cs" />
+    <Compile Include="Import\OrderImporter.cs" />
     <Compile Include="Import\PostalCodeImporter.cs" />
     <Compile Include="Import\ProductImporter.cs" />
     <Compile Include="Import\ProductIngredientImport.cs" />

@@ -21,67 +21,98 @@ namespace MarioPizzaImport
          */
         public void ParseMappingFromOrderFile(string filePath)
         {
-            using (StreamReader sr = new StreamReader(filePath))
+            Console.WriteLine(">>> Starting parsing of mapping for '{0}'.", filePath);
+
+            string[] allLine = File.ReadAllLines(filePath);
+            int lineNumber = 0;
+
+            List<string> allProductName = new List<string>();
+            List<string> allIngredientName = new List<string>();
+
+            foreach (string line in allLine)
             {
-                // Skip the header line.
-                sr.ReadLine();
-                String line;
-                while ((line = sr.ReadLine()) != null)
+                lineNumber++;
+                string[] partCollection = line.Split(';');
+
+                if (partCollection.Length <= 1)
                 {
-                    string[] partCollection = line.Split(';');
+                    // Skip
+                    continue;
+                }
+                else if (partCollection.Length != 23)
+                {
+                    throw new InvalidDataException("Unexpected number of columns, a non-order table has been passed to the mapping function.");
+                }
 
-                    if (partCollection.Length != 23)
+                string productName = partCollection[10].Trim();
+                string extraIngredientList = partCollection[16];
+
+                if (productName.Length > 0)
+                {
+                    allProductName.Add(productName);
+                }
+
+                if (extraIngredientList.Length > 0)
+                {
+                    string[] ingredientNameCollection = extraIngredientList.Split(',');
+                    foreach (string ingredientName in ingredientNameCollection)
                     {
-                        throw new InvalidDataException("Unexpected number of columns, a non-order table has been passed to the mapping function.");
-                    }
+                        string ingredientNameTrimmed = ingredientName.Trim();
 
-                    string productName = partCollection[11];
-                    string extraIngredientList = partCollection[17];
-
-                    if (productName.Length > 0)
-                    {
-                        // If the product already exists, or there is a mapping for it already, no need to map it again.
-                        product product = database.products.SingleOrDefault(i => i.name == productName);
-                        mapping existingMapping = database.mappings.SingleOrDefault(i => i.originalname == productName && i.isingredient == false);
-                        if (product == null && existingMapping == null)
+                        if (ingredientNameTrimmed.Length > 0)
                         {
-                            mapProduct(productName);
+                            allIngredientName.Add(ingredientNameTrimmed);
                         }
                     }
-
-                    if (extraIngredientList.Length > 0)
-                    {
-                        string[] ingredientNameCollection = extraIngredientList.Split(',');
-                        foreach (string ingredientName in ingredientNameCollection)
-                        {
-                            // If the ingredient already exists, or there is a mapping for it already, no need to map it again.
-                            ingredient ingredient = database.ingredients.SingleOrDefault(i => i.name == ingredientName);
-                            mapping existingMapping = database.mappings.SingleOrDefault(i => i.originalname == ingredientName && i.isingredient == true);
-                            if (ingredient == null && existingMapping == null)
-                            {
-                                mapIngredient(ingredientName);
-                            }
-                        }
-                    }
-                    database.SaveChanges();
                 }
             }
+
+            List<ingredient> allIngredientExisting = this.database.ingredients.Where(i => allIngredientName.Contains(i.name)).ToList();
+            List<product> allProductExisting = this.database.products.Where(p => allProductName.Contains(p.name)).ToList();
+
+            List<string> allProductNotExisting = allProductName.Where(p => !allProductExisting.Exists(p2 => p2.name == p)).Distinct().ToList();
+            List<string> allIngredientNotExisting = allIngredientName.Where(i => !allIngredientExisting.Exists(i2 => i2.name == i)).Distinct().ToList();
+
+            int numberOfAddedIngredient = 0;
+            int numberOfAddedProduct = 0;
+
+            foreach (string productNotExisting in allProductNotExisting)
+            {
+                if (database.mappings.Where(m => m.originalname == productNotExisting).Count() <= 0)
+                {
+                    MapProduct(productNotExisting);
+                    numberOfAddedProduct++;
+                }
+            }
+
+            foreach (string ingredientNotExisting in allIngredientNotExisting)
+            {
+                if (database.mappings.Where(m => m.originalname == ingredientNotExisting).Count() <= 0)
+                {
+                    MapIngredient(ingredientNotExisting);
+                    numberOfAddedIngredient++;
+                }
+            }
+
+            database.SaveChanges();
+
+            Console.WriteLine(">>> Mapped {0} products and {1} ingredients", numberOfAddedProduct, numberOfAddedIngredient);
         }
 
-        private void mapProduct(string productName)
+        private void MapProduct(string productName)
         {
             mapping mapping = new mapping();
             mapping.originalname = productName;
             database.mappings.Add(mapping);
-            Console.WriteLine("new mapping created for product with name {0}", productName);
+            Console.WriteLine("New mapping created for product with name {0}", productName);
         }
-        private void mapIngredient(string ingredientName)
+        private void MapIngredient(string ingredientName)
         {
             mapping mapping = new mapping();
             mapping.originalname = ingredientName;
             mapping.isingredient = true;
             database.mappings.Add(mapping);
-            Console.WriteLine("new mapping created for ingredient with name {0}", ingredientName);
+            Console.WriteLine("New mapping created for ingredient with name {0}", ingredientName);
         }
     }
 }
