@@ -85,7 +85,16 @@ namespace MarioPizzaImport
                                 number = Regex.Replace(paths[4], "[^0-9]", "")
                             };
 
-                            order.datecreated = GetDateTimeFromLongDateString(paths[6]);
+                            try
+                            {
+                                order.datecreated = GetDateTimeFromLongDateString(paths[6]);
+                            }
+                            catch
+                            {
+                                Logger.Instance.LogError(filePath,string.Format("Unable to parse DateTime from datestring {0} on line {1}", paths[6], row));
+                                continue;
+                            }
+                            
 
                             string deliveryCostField = paths[14].Trim();
                             if (!string.IsNullOrEmpty(deliveryCostField))
@@ -124,7 +133,8 @@ namespace MarioPizzaImport
                             string couponField = paths[20];
                             if (!string.IsNullOrEmpty(couponField))
                             {
-                                coupon coupon = coupons.SingleOrDefault(i => i.description == couponField);
+                                // ToDo change to SingleOrDefault once duplicates are removed from the db.
+                                coupon coupon = coupons.FirstOrDefault(i => i.description == couponField);
                                 if (coupon == null)
                                 {
                                     coupon = new coupon();
@@ -146,7 +156,8 @@ namespace MarioPizzaImport
                         {
                             continue;
                         }
-                        product product = products.SingleOrDefault(i => i.name == mappedProductName);
+                        // ToDo change to SingleOrDefault once duplicates are removed from the db.
+                        product product = products.FirstOrDefault(i => i.name == mappedProductName);
                         if (product == null)
                         {
                             Logger.Instance.LogError(filePath, string.Format("Product {0} does not exists on line {1}!", mappedProductName, row));
@@ -154,27 +165,39 @@ namespace MarioPizzaImport
                         }
                         orderline.product = product;
 
-
-                        string mappedBottomName = this.GetMappedValue(paths[11], false);
-                        bottom bottom = bottoms.SingleOrDefault(i => i.name == mappedBottomName);
-                        if (bottom == null)
+                        // #Bottom
+                        if (paths[11] != "")
                         {
-                            Logger.Instance.LogError(filePath, string.Format("Bottom {0} does not exists on line {1}!", mappedBottomName, row));
-                            continue;
+                            string mappedBottomName = this.GetMappedValue(paths[11], false);
+                            // ToDo change to SingleOrDefault once duplicates are removed from the db.
+                            bottom bottom = bottoms.FirstOrDefault(i => i.name == mappedBottomName);
+                            if (bottom == null)
+                            {
+                                Logger.Instance.LogError(filePath, string.Format("Bottom {0} does not exists on line {1}!", mappedBottomName, row));
+                                continue;
+                            }
+                            orderline.bottom = bottom;
                         }
-                        orderline.bottom = bottom;
 
-                        string mappedSauceName = this.GetMappedValue(paths[12], false);
-                        //
-                        // CHANGE TO SINGLEORDEFAULT!!!!
-                        //
-                        sauce sauce = sauces.FirstOrDefault(i => i.name == mappedSauceName);
-                        if (sauce == null)
+                        // #Sauce
+                        if(paths[12] != "")
                         {
-                            Logger.Instance.LogError(filePath, string.Format("Sauce {0} does not exists on line {1}!", mappedSauceName, row));
-                            continue;
+                            string mappedSauceName = this.GetMappedValue(paths[12], false);
+                            // ToDo change to SingleOrDefault once duplicates are removed from the db.
+                            sauce sauce = sauces.FirstOrDefault(i => i.name == mappedSauceName);
+                            if (sauce == null)
+                            {
+                                Logger.Instance.LogError(filePath, string.Format("Sauce {0} does not exists on line {1}!", mappedSauceName, row));
+                                continue;
+                            }
+                            // If the sauce is not the same as the default sauce, add it to productordersauce
+                            if (sauce != product.sauce)
+                            {
+                                productordersauce productordersauce = new productordersauce();
+                                productordersauce.orderline = orderline;
+                                orderline.productordersauces.Add(productordersauce);
+                            }
                         }
-                        orderline.product.sauce = sauce;
 
                         orderline.price = Decimal.Parse(Regex.Replace(paths[13], "[^0-9.]", "")) / 100;
 
@@ -194,14 +217,19 @@ namespace MarioPizzaImport
                                 string mappedIngredientName = this.GetMappedValue(ei.Trim(), true);
                                 ingredient ingredient = ingredients.SingleOrDefault(i => i.name == mappedIngredientName);
                                 //TODO: look for mapping, else create new/exception
-                                productorderingredient productorderingredient = new productorderingredient();
                                 if (ingredient == null)
                                 {
                                     Logger.Instance.LogError(filePath, string.Format("Ingredient {0} does not exists on line {1}!", mappedIngredientName, row));
                                     continue;
                                 }
-                                productorderingredient.ingredient = ingredient;
-                                productorderingredient.orderline = orderline;
+                                if(orderline.productorderingredients.Count > 0)
+                                {
+                                    IncrementOrCreateProductOrderIngredient(orderline, ingredient);
+                                }
+                                else
+                                {
+                                    CreateProductOrderIngredient(orderline, ingredient);
+                                }
                             }
                         }
                         order.orderlines.Add(orderline);
@@ -223,6 +251,31 @@ namespace MarioPizzaImport
 
             //database.BulkInsert<order>(orders, 5000);
             return orders.Count;
+        }
+
+        private static void IncrementOrCreateProductOrderIngredient(orderline orderline, ingredient ingredient)
+        {
+            bool ingredientfound = false;
+            foreach (productorderingredient orderIngredient in orderline.productorderingredients)
+            {
+                if (orderIngredient.ingredient == ingredient)
+                {
+                    orderIngredient.amount++;
+                    ingredientfound = true;
+                    break;
+                }
+            }
+            if (ingredientfound == false)
+            {
+                CreateProductOrderIngredient(orderline, ingredient);
+            }
+        }
+
+        private static void CreateProductOrderIngredient(orderline orderline, ingredient ingredient)
+        {
+            productorderingredient productorderingredient = new productorderingredient();
+            productorderingredient.ingredient = ingredient;
+            orderline.productorderingredients.Add(productorderingredient);
         }
 
         private int GetMonthNumberFromString(string monthString)

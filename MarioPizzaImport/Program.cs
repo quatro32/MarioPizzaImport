@@ -14,21 +14,18 @@ namespace MarioPizzaImport
             // Create the router to route the commands through.
             CommandRouter commandRouter = new CommandRouter(database, countrycode);
             
-            //// Register all possible commands.
-            //commandRouter.Register(new CommandImportPostalCode());
-            //commandRouter.Register(new CommandImportStore());
-            //commandRouter.Register(new CommandImportBottom());
-            //commandRouter.Register(new CommandImportProduct());
-            //commandRouter.Register(new CommandImportIngredient());
-            //commandRouter.Register(new CommandImportPizzaIngredient());
-            //commandRouter.Register(new CommandParseMapping());
+            // Register all possible commands.
+            commandRouter.Register(new CommandImportPostalCode());
+            commandRouter.Register(new CommandImportStore());
+            commandRouter.Register(new CommandImportBottom());
+            commandRouter.Register(new CommandImportProduct());
+            commandRouter.Register(new CommandImportIngredient());
+            commandRouter.Register(new CommandImportPizzaIngredient());
+            commandRouter.Register(new CommandParseMapping());
+            commandRouter.Register(new CommandImportOrder());
             
-            //// Execute the command
-            //commandRouter.Execute(allInputString);
-
-            OrderImporter importer = new OrderImporter(database, countrycode);
-            importer.Run(@"C:\Users\shnva\Desktop\resources\MarioOrderData01_10000.csv");
-            
+            // Execute the command
+            commandRouter.Execute(allInputString);
             Console.ReadKey();
         }
 

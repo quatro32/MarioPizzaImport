@@ -67,6 +67,7 @@
     <Compile Include="Command\Command.cs" />
     <Compile Include="Command\CommandDatabase.cs" />
     <Compile Include="Command\CommandImport.cs" />
+    <Compile Include="Command\CommandImportOrder.cs" />
     <Compile Include="Command\CommandImportBottom.cs" />
     <Compile Include="Command\CommandImportIngredient.cs" />
     <Compile Include="Command\CommandImportPizzaIngredient.cs" />
