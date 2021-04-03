@@ -195,6 +195,7 @@ namespace MarioPizzaImport
                                 productordersauce productordersauce = new productordersauce();
                                 productordersauce.orderline = orderline;
                                 productordersauce.sauce = sauce;
+                                productordersauce.amount = 1;
                                 orderline.productordersauces.Add(productordersauce);
                             }
                         }
