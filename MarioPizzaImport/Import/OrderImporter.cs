@@ -70,6 +70,7 @@ namespace MarioPizzaImport
                             if (store == null)
                             {
                                 Logger.Instance.LogError(filePath, string.Format("Store {0} does not exists on line {1}!", storeName, row));
+                                orders.Remove(order);
                                 continue;
                             }
                             order.store = store;
@@ -92,6 +93,7 @@ namespace MarioPizzaImport
                             catch
                             {
                                 Logger.Instance.LogError(filePath,string.Format("Unable to parse DateTime from datestring {0} on line {1}", paths[6], row));
+                                orders.Remove(order);
                                 continue;
                             }
                             
@@ -108,6 +110,7 @@ namespace MarioPizzaImport
                             if (deliverytype == null)
                             {
                                 Logger.Instance.LogError(filePath, string.Format("Deliverytype {0} does not exists on line {1}!", deliveryType, row));
+                                orders.Remove(order);
                                 continue;
                             }
                             order.deliverytype = deliverytype;
@@ -165,8 +168,8 @@ namespace MarioPizzaImport
                         }
                         orderline.product = product;
 
-                        // #Bottom
-                        if (paths[11] != "")
+                        string bottomName = paths[11];
+                        if (string.IsNullOrEmpty(bottomName) == false)
                         {
                             string mappedBottomName = this.GetMappedValue(paths[11], false);
                             // ToDo change to SingleOrDefault once duplicates are removed from the db.
@@ -179,8 +182,8 @@ namespace MarioPizzaImport
                             orderline.bottom = bottom;
                         }
 
-                        // #Sauce
-                        if(paths[12] != "")
+                        string sauceName = paths[12];
+                        if(string.IsNullOrEmpty(sauceName) == false)
                         {
                             string mappedSauceName = this.GetMappedValue(paths[12], false);
                             // ToDo change to SingleOrDefault once duplicates are removed from the db.
