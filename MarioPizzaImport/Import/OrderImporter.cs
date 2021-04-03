@@ -49,19 +49,6 @@ namespace MarioPizzaImport
                         string[] paths = line.Split(';');
                         if (paths[0] != string.Empty)
                         {
-                            if (order != null)
-                            {
-                                orders.Add(order);
-                                count++;
-                                //if (count % 10000 == 0)
-                                //{
-                                //    database.orders.AddRange(orders);
-                                //    database.SaveChanges();
-                                //    orders.Clear();
-                                //    Console.WriteLine("[INFO] Saved 1000 orders to database!");
-                                //}
-                                Console.WriteLine("[INFO] Added order to orders. Current amount: {0}", count);
-                            }
                             order = new order();
 
                             string storeName = paths[0];
@@ -70,7 +57,6 @@ namespace MarioPizzaImport
                             if (store == null)
                             {
                                 Logger.Instance.LogError(filePath, string.Format("Store {0} does not exists on line {1}!", storeName, row));
-                                orders.Remove(order);
                                 continue;
                             }
                             order.store = store;
@@ -93,7 +79,6 @@ namespace MarioPizzaImport
                             catch
                             {
                                 Logger.Instance.LogError(filePath,string.Format("Unable to parse DateTime from datestring {0} on line {1}", paths[6], row));
-                                orders.Remove(order);
                                 continue;
                             }
                             
@@ -110,7 +95,6 @@ namespace MarioPizzaImport
                             if (deliverytype == null)
                             {
                                 Logger.Instance.LogError(filePath, string.Format("Deliverytype {0} does not exists on line {1}!", deliveryType, row));
-                                orders.Remove(order);
                                 continue;
                             }
                             order.deliverytype = deliverytype;
@@ -121,7 +105,15 @@ namespace MarioPizzaImport
                             }
                             else
                             {
-                                order.datedelivered = GetDateTimeFromLongDateString(paths[8], paths[9]);
+                                try
+                                {
+                                    order.datedelivered = GetDateTimeFromLongDateString(paths[8], paths[9]);
+                                }
+                                catch
+                                {
+                                    Logger.Instance.LogError(filePath, string.Format("Unable to parse DateTime from datestring {0} on line {1}", paths[6], row));
+                                    continue;
+                                }
                             }
 
                             //TODO: Proper
@@ -149,6 +141,10 @@ namespace MarioPizzaImport
                                 }
                                 order.coupon = coupon;
                             }
+
+                            orders.Add(order);
+                            count++;
+                            Console.WriteLine("[INFO] Added order to orders. Current amount: {0}", count);
                         }
 
                         orderline orderline = new orderline();
@@ -198,6 +194,7 @@ namespace MarioPizzaImport
                             {
                                 productordersauce productordersauce = new productordersauce();
                                 productordersauce.orderline = orderline;
+                                productordersauce.sauce = sauce;
                                 orderline.productordersauces.Add(productordersauce);
                             }
                         }
