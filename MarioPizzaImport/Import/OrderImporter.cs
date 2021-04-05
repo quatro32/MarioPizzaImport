@@ -129,7 +129,7 @@ namespace MarioPizzaImport
                             if (!string.IsNullOrEmpty(couponField))
                             {
                                 // ToDo change to SingleOrDefault once duplicates are removed from the db.
-                                coupon coupon = coupons.FirstOrDefault(i => i.description == couponField);
+                                coupon coupon = coupons.SingleOrDefault(i => i.description == couponField);
                                 if (coupon == null)
                                 {
                                     coupon = new coupon();
@@ -156,7 +156,7 @@ namespace MarioPizzaImport
                             continue;
                         }
                         // ToDo change to SingleOrDefault once duplicates are removed from the db.
-                        product product = products.FirstOrDefault(i => i.name == mappedProductName);
+                        product product = products.SingleOrDefault(i => i.name == mappedProductName);
                         if (product == null)
                         {
                             Logger.Instance.LogError(filePath, string.Format("Product {0} does not exists on line {1}!", mappedProductName, row));
@@ -169,7 +169,7 @@ namespace MarioPizzaImport
                         {
                             string mappedBottomName = this.GetMappedValue(paths[11], false);
                             // ToDo change to SingleOrDefault once duplicates are removed from the db.
-                            bottom bottom = bottoms.FirstOrDefault(i => i.name == mappedBottomName);
+                            bottom bottom = bottoms.SingleOrDefault(i => i.name == mappedBottomName);
                             if (bottom == null)
                             {
                                 Logger.Instance.LogError(filePath, string.Format("Bottom {0} does not exists on line {1}!", mappedBottomName, row));
@@ -183,7 +183,7 @@ namespace MarioPizzaImport
                         {
                             string mappedSauceName = this.GetMappedValue(paths[12], false);
                             // ToDo change to SingleOrDefault once duplicates are removed from the db.
-                            sauce sauce = sauces.FirstOrDefault(i => i.name == mappedSauceName);
+                            sauce sauce = sauces.SingleOrDefault(i => i.name == mappedSauceName);
                             if (sauce == null)
                             {
                                 Logger.Instance.LogError(filePath, string.Format("Sauce {0} does not exists on line {1}!", mappedSauceName, row));
