@@ -30,12 +30,9 @@ namespace MarioPizzaImport
         {
             List<string> allLineInMapping = File.ReadAllLines(filePath).ToList();
             allLineInMapping.RemoveRange(0,5); // Remove the header.
-            int lines = 0;
 
             foreach (string line in allLineInMapping)
             {
-                lines++;
-
                 string[] partCollection = line.Split(';');
 
                 if (partCollection.Length <= 1)
@@ -78,8 +75,6 @@ namespace MarioPizzaImport
                         }
                     }
                 }
-
-                Console.WriteLine("{0}/{1}", lines, allLineInMapping.Count);
             }
 
             database.SaveChanges();
