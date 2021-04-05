@@ -320,7 +320,7 @@ namespace MarioPizzaImport
 
         private DateTime GetDateTimeFromLongDateString(string dateString, string timeString)
         {
-            return GetDateTimeFromLongDateString(dateString) + TimeSpan.Parse(timeString);
+            return GetDateTimeFromLongDateString(dateString) + DateTime.Parse(timeString).TimeOfDay;
         }
 
         private string GetMappedValue(string value, bool isIngredient)
