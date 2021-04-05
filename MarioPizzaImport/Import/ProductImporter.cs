@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,75 +18,82 @@ namespace MarioPizzaImport.Import
         {
             int insertedProducts = 0;
 
-            using (StreamReader sr = new StreamReader(path))
+            DataTable productTable = new DataTable();
+
+            // Begin Excel
+            using (OleDbConnection localDbConnection = new OleDbConnection(string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=Excel 12.0;", filePath)))
             {
-                // Skip the header line.
-                sr.ReadLine();
-                String line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    //categorie;subcategorie;productnaam;productomschrijving;prijs;spicy;vegetarisch;available;amount;name
-                    string[] parts = line.Split(';');
-                    if (parts.Length < 7)
-                    {
-                        Logger.Instance.LogError(path, "Could not create product for line containing data: " + line);
-                        continue;
-                    }
-                    string categoryName = parts[0];
-                    string subcategoryName = parts[1];
-                    string name = parts[2];
-                    string description = parts[3];
-                    Decimal price = Decimal.Parse(Regex.Replace(parts[4], "[^0-9.]", ""));
-                    bool spicy = parts[5].ToUpper() == "JA";
-                    bool vegetarian = parts[6].ToUpper() == "JA";
+                localDbConnection.Open();
 
-                    productcategory category = findOrCreateCategory(categoryName);
-                    productcategory subcategory = findOrCreateCategory(subcategoryName, category);
+                OleDbDataAdapter dataAdapter = new OleDbDataAdapter("select * from [Sheet1$]", localDbConnection);
+                dataAdapter.Fill(productTable);
 
-                    product product = database.products.SingleOrDefault(i => i.name == name);
-                    if (product == null)
-                    {
-                        product = new product();
-                        product.name = name;
-                        product.description = description;
-                        product.isspicy = spicy;
-                        product.isvegetarian = vegetarian;
-                        product.productcategory = subcategory.id;
-                        database.products.Add(product);
-
-                        // Create a productprice for the current price.
-                        productprice productprice = new productprice();
-                        productprice.product = product;
-                        productprice.price = price;
-                        productprice.currency = "EUR";
-                        productprice.startdate = DateTime.Now;
-                        productprice.countrycode = countrycode;
-                        database.productprices.Add(productprice);
-                        Console.WriteLine("New product {0} created", name);
-
-                        insertedProducts++;
-                    }
-                    // If the product already exists, update every field except name, this includes creating a new price.
-                    else
-                    {
-                        product.description = description;
-                        product.isspicy = spicy;
-                        product.isvegetarian = vegetarian;
-                        product.productcategory = subcategory.id;
-
-                        // Create a productprice for the current price.
-                        productprice productprice = new productprice();
-                        productprice.product = product;
-                        productprice.price = price;
-                        productprice.currency = "EUR";
-                        productprice.startdate = DateTime.Now;
-                        productprice.countrycode = countrycode;
-                        database.productprices.Add(productprice);
-                        Console.WriteLine("Updating existing product {0}", name);
-                    }
-                    database.SaveChanges();
-                }
+                localDbConnection.Close();
             }
+
+            foreach (DataRow row in productTable.Rows)
+            {
+                //categorie;subcategorie;productnaam;productomschrijving;prijs;spicy;vegetarisch;available;amount;name
+                if (row.ItemArray.Length < 7)
+                {
+                    Logger.Instance.LogError(path, "Could not create product for line: " + row.ToString());
+                    continue;
+                }
+                string categoryName = (string) row.ItemArray[0];
+                string subcategoryName = (string) row.ItemArray[1];
+                string name = (string)row.ItemArray[2];
+                string description = row.ItemArray[3].ToString();
+                Decimal price = Decimal.Parse(Regex.Replace(Convert.ToString(row.ItemArray[4]).Replace(".", ","), "[^0-9,]", ""));
+                bool spicy = ((string)row.ItemArray[5]).ToUpper() == "JA";
+                bool vegetarian = ((string) row.ItemArray[6]).ToUpper() == "JA";
+
+                productcategory category = findOrCreateCategory(categoryName);
+                productcategory subcategory = findOrCreateCategory(subcategoryName, category);
+
+                product product = database.products.SingleOrDefault(i => i.name == name);
+                if (product == null)
+                {
+                    product = new product();
+                    product.name = name;
+                    product.description = description;
+                    product.isspicy = spicy;
+                    product.isvegetarian = vegetarian;
+                    product.productcategory = subcategory.id;
+                    database.products.Add(product);
+
+                    // Create a productprice for the current price.
+                    productprice productprice = new productprice();
+                    productprice.product = product;
+                    productprice.price = price;
+                    productprice.currency = "EUR";
+                    productprice.startdate = DateTime.Now;
+                    productprice.countrycode = countrycode;
+                    database.productprices.Add(productprice);
+                    Console.WriteLine("New product {0} created", name);
+
+                    insertedProducts++;
+                }
+                // If the product already exists, update every field except name, this includes creating a new price.
+                else
+                {
+                    product.description = description;
+                    product.isspicy = spicy;
+                    product.isvegetarian = vegetarian;
+                    product.productcategory = subcategory.id;
+
+                    // Create a productprice for the current price.
+                    productprice productprice = new productprice();
+                    productprice.product = product;
+                    productprice.price = price;
+                    productprice.currency = "EUR";
+                    productprice.startdate = DateTime.Now;
+                    productprice.countrycode = countrycode;
+                    database.productprices.Add(productprice);
+                    Console.WriteLine("Updating existing product {0}", name);
+                }
+                database.SaveChanges();
+            }
+
             return insertedProducts;
         }
 

@@ -10,10 +10,17 @@ namespace MarioPizzaImport
     class MappingParser
     {
         private readonly dbi298845_prangersEntities database;
+        private List<product> products;
+        private List<mapping> mappings;
+        private List<ingredient> ingredients;
 
         public MappingParser(dbi298845_prangersEntities database)
         {
             this.database = database;
+
+            this.products = database.products.ToList();
+            this.mappings = database.mappings.ToList();
+            this.ingredients = database.ingredients.ToList();
         }
 
         /**
@@ -21,51 +28,56 @@ namespace MarioPizzaImport
          */
         public void ParseMappingFromOrderFile(string filePath)
         {
-            using (StreamReader sr = new StreamReader(filePath))
+            List<string> allLineInMapping = File.ReadAllLines(filePath).ToList();
+            allLineInMapping.RemoveRange(0,5); // Remove the header.
+
+            foreach (string line in allLineInMapping)
             {
-                // Skip the header line.
-                sr.ReadLine();
-                String line;
-                while ((line = sr.ReadLine()) != null)
+                string[] partCollection = line.Split(';');
+
+                if (partCollection.Length <= 1)
                 {
-                    string[] partCollection = line.Split(';');
+                    // Skip empty lines or lines with a comment.
+                    continue;
+                }
+                if (partCollection.Length != 23)
+                {
+                    throw new InvalidDataException("Unexpected number of columns, a non-order table has been passed to the mapping function.");
+                }
 
-                    if (partCollection.Length != 23)
+                string productName = partCollection[10].ToString().Trim();
+                string extraIngredientList = partCollection[16].ToString().Trim();
+
+                if (productName.Length > 0)
+                {
+                    // If the product already exists, or there is a mapping for it already, no need to map it again.
+                    product product = products.SingleOrDefault(i => i.name == productName);
+                    mapping existingMapping = mappings.SingleOrDefault(i => i.originalname == productName && i.isingredient == false);
+                    if (product == null && existingMapping == null)
                     {
-                        throw new InvalidDataException("Unexpected number of columns, a non-order table has been passed to the mapping function.");
+                        mapProduct(productName);
                     }
+                }
 
-                    string productName = partCollection[11];
-                    string extraIngredientList = partCollection[17];
-
-                    if (productName.Length > 0)
+                if (extraIngredientList.Length > 0)
+                {
+                    string[] ingredientNameCollection = extraIngredientList.Split(',');
+                    foreach (string ingredientName in ingredientNameCollection)
                     {
-                        // If the product already exists, or there is a mapping for it already, no need to map it again.
-                        product product = database.products.SingleOrDefault(i => i.name == productName);
-                        mapping existingMapping = database.mappings.SingleOrDefault(i => i.originalname == productName && i.isingredient == false);
-                        if (product == null && existingMapping == null)
+                        string ingredientNameFormatted = ingredientName.Trim();
+
+                        // If the ingredient already exists, or there is a mapping for it already, no need to map it again.
+                        ingredient ingredient = ingredients.SingleOrDefault(i => i.name == ingredientNameFormatted);
+                        mapping existingMapping = mappings.SingleOrDefault(i => i.originalname == ingredientNameFormatted && i.isingredient == true);
+                        if (ingredient == null && existingMapping == null)
                         {
-                            mapProduct(productName);
+                            mapIngredient(ingredientNameFormatted);
                         }
                     }
-
-                    if (extraIngredientList.Length > 0)
-                    {
-                        string[] ingredientNameCollection = extraIngredientList.Split(',');
-                        foreach (string ingredientName in ingredientNameCollection)
-                        {
-                            // If the ingredient already exists, or there is a mapping for it already, no need to map it again.
-                            ingredient ingredient = database.ingredients.SingleOrDefault(i => i.name == ingredientName);
-                            mapping existingMapping = database.mappings.SingleOrDefault(i => i.originalname == ingredientName && i.isingredient == true);
-                            if (ingredient == null && existingMapping == null)
-                            {
-                                mapIngredient(ingredientName);
-                            }
-                        }
-                    }
-                    database.SaveChanges();
                 }
             }
+
+            database.SaveChanges();
         }
 
         private void mapProduct(string productName)
@@ -74,6 +86,7 @@ namespace MarioPizzaImport
             mapping.originalname = productName;
             database.mappings.Add(mapping);
             Console.WriteLine("new mapping created for product with name {0}", productName);
+            mappings.Add(mapping);
         }
         private void mapIngredient(string ingredientName)
         {
@@ -82,6 +95,7 @@ namespace MarioPizzaImport
             mapping.isingredient = true;
             database.mappings.Add(mapping);
             Console.WriteLine("new mapping created for ingredient with name {0}", ingredientName);
+            mappings.Add(mapping);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace MarioPizzaImport.Import
                     {
                         string[] parts = line.Split(';');
                         string name = parts[0];
-                        decimal price = Decimal.Parse(Regex.Match(parts[1], @"[0-9]+(\.[0-9]+)?").Value);
+                        decimal price = Decimal.Parse(Regex.Replace(parts[1], "[^0-9.]", "")) / 100;
 
                         // Controleren of het ingredient al voorkomt
                         var ingredient = database.ingredients.SingleOrDefault(i => i.name == name);
@@ -51,9 +51,12 @@ namespace MarioPizzaImport.Import
                             ingredient.ingredientprices.Add(ingredientprice);
                             database.ingredients.Add(ingredient);
                             database.SaveChanges();
-                            Console.WriteLine("Ingredient added");
+                            Console.WriteLine("Added ingredient {0}", name);
 
                             numberOfIngredientImported += 1;
+                        } else
+                        {
+                            Console.WriteLine("Ingredient {0} already exists", name);
                         }
                     }
                 }
