@@ -18,7 +18,6 @@ namespace MarioPizzaImport.Import
         override protected int Import(string filePath)
         {
             List<productingredient> allIngredients = new List<productingredient>();
-            List<DataRow> allLineIngredientInformation = new List<DataRow>();
 
             // Create Table
             DataTable productIngredients = new DataTable();
@@ -37,18 +36,10 @@ namespace MarioPizzaImport.Import
 
             foreach (DataRow row in productIngredients.Rows)
             {
-                 allLineIngredientInformation.Add(row);
-
-                if (allLineIngredientInformation.Count != 0)
+                productingredient productIngredient = GetOrCreateIngredientFromLine(row);
+                if (productIngredient != null)
                 {
-                    foreach (DataRow lineInformation in allLineIngredientInformation)
-                    {
-                        productingredient productIngredient = CreateIngredientFromAllLine(lineInformation);
-                        if (productIngredient != null)
-                        {
-                            allIngredients.Add(productIngredient);
-                        }
-                    }
+                    allIngredients.Add(productIngredient);
                 }
             }
            
@@ -58,7 +49,7 @@ namespace MarioPizzaImport.Import
             List<productingredient> allExistingIngredients = database.productingredients.Where(s => allIngredientNames.Contains(s.ingredient.name)).ToList();
             List<productingredient> allNewIngredients = allIngredients.Where(s => allExistingIngredients.Where(existing => existing.ingredient.name.Equals(s.ingredient.name)).Count() == 0).ToList();
 
-            database.productingredients.AddRange(allIngredients);
+            database.productingredients.AddRange(allNewIngredients);
             database.SaveChanges();
 
             Console.WriteLine("Found {0} existing ingredients", allExistingIngredients.Count);
@@ -69,7 +60,7 @@ namespace MarioPizzaImport.Import
             return allIngredients.Count;
         }
 
-        productingredient CreateIngredientFromAllLine(DataRow lineInformation)
+        productingredient GetOrCreateIngredientFromLine(DataRow lineInformation)
         {
 
             string productName = (string)lineInformation.ItemArray[2];
@@ -94,16 +85,23 @@ namespace MarioPizzaImport.Import
                 if (ingredient == null)
                 {
                     Logger.Instance.LogError(filePath, String.Format("Could not find ingredient named {0} to add to product {1}", ingredientName, productName));
+                    CreateMappingForIngredient(ingredientName);
+
                     return null;
                 }
             }
 
-            productingredient productingredient = new productingredient();
+            productingredient productingredient = database.productingredients.SingleOrDefault(pi => pi.product.name == product.name && pi.ingredient.name == ingredient.name);
 
-            productingredient.product = product;
-            productingredient.amount = ingredientAmount;
+            if (productingredient == null)
+            {
+                productingredient = new productingredient();
 
-            productingredient.ingredient = ingredient;
+                productingredient.product = product;
+                productingredient.amount = ingredientAmount;
+
+                productingredient.ingredient = ingredient;
+            }
 
             return productingredient;
         }
@@ -124,8 +122,7 @@ namespace MarioPizzaImport.Import
 
             productprice price = new productprice();
             price.countrycode = this.countrycode;
-            price.price = Decimal.Parse(Regex.Replace((string)lineInformation.ItemArray[4], "[^0-9.]", "")); ;
-            price.product = product;
+            price.price = Decimal.Parse(Regex.Replace(lineInformation.ItemArray[4].ToString(), "[^0-9.]", "")) / 100;
 
             sauce sauce = this.GetOrCreateSauce((string)lineInformation.ItemArray[11]);
             product.sauce = sauce;
@@ -136,6 +133,9 @@ namespace MarioPizzaImport.Import
                 (string)lineInformation.ItemArray[2],
                 (string)lineInformation.ItemArray[11]
             );
+
+            database.SaveChanges();
+
             return product;
         }
 
@@ -148,6 +148,21 @@ namespace MarioPizzaImport.Import
                 sauce.name = saucename;
             }
             return sauce;
+        }
+        private void CreateMappingForIngredient(string ingredientName)
+        {
+            mapping mapping = database.mappings.SingleOrDefault(m => m.originalname == ingredientName);
+
+            if (mapping == null)
+            {
+                mapping = new mapping();
+                mapping.originalname = ingredientName;
+                mapping.isingredient = true;
+
+                database.mappings.Add(mapping);
+
+                database.SaveChanges();
+            }
         }
     }
 }

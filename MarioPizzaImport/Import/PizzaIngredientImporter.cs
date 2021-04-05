@@ -53,7 +53,7 @@ namespace MarioPizzaImport
             List<productingredient> allExistingIngredients = database.productingredients.Where(s => allIngredientNames.Contains(s.ingredient.name)).ToList();
             List<productingredient> allNewIngredients = allIngredients.Where(s => allExistingIngredients.Where(existing => existing.ingredient.name.Equals(s.ingredient.name)).Count() == 0).ToList();
 
-            database.productingredients.AddRange(allIngredients);
+            database.productingredients.AddRange(allNewIngredients);
             database.SaveChanges();
 
             Console.WriteLine("Found {0} existing ingredients", allExistingIngredients.Count);
@@ -89,8 +89,10 @@ namespace MarioPizzaImport
                 if (ingredient == null)
                 {
                     Logger.Instance.LogError(filePath, String.Format("Could not find ingredient named {0} for product {1}", ingredientName, productName));
+                    CreateMappingForIngredient(ingredientName);
+
                     return null;
-                }
+                } 
             }
 
             productingredient productingredient = new productingredient();
@@ -101,6 +103,17 @@ namespace MarioPizzaImport
             productingredient.ingredient = ingredient;
 
             return productingredient;
+        }
+
+        private void CreateMappingForIngredient(string ingredientName)
+        {
+            mapping mapping = new mapping();
+            mapping.originalname = ingredientName;
+            mapping.isingredient = true;
+
+            database.mappings.Add(mapping);
+
+            database.SaveChanges();
         }
     }
 }
