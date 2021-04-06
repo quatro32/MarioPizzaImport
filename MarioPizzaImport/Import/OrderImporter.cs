@@ -78,10 +78,10 @@ namespace MarioPizzaImport
                             }
                             catch
                             {
-                                Logger.Instance.LogError(filePath,string.Format("Unable to parse DateTime from datestring {0} on line {1}", paths[6], row));
+                                Logger.Instance.LogError(filePath, string.Format("Unable to parse DateTime from datestring {0} on line {1}", paths[6], row));
                                 continue;
                             }
-                            
+
 
                             string deliveryCostField = paths[14].Trim();
                             if (!string.IsNullOrEmpty(deliveryCostField))
@@ -179,7 +179,7 @@ namespace MarioPizzaImport
                         }
 
                         string sauceName = paths[12];
-                        if(string.IsNullOrEmpty(sauceName) == false)
+                        if (string.IsNullOrEmpty(sauceName) == false)
                         {
                             string mappedSauceName = this.GetMappedValue(paths[12], false);
                             // ToDo change to SingleOrDefault once duplicates are removed from the db.
@@ -223,7 +223,8 @@ namespace MarioPizzaImport
                                     Logger.Instance.LogError(filePath, string.Format("Ingredient {0} does not exists on line {1}!", mappedIngredientName, row));
                                     continue;
                                 }
-                                if(orderline.productorderingredients.Count > 0)
+
+                                if (orderline.productorderingredients.Count > 0)
                                 {
                                     IncrementOrCreateProductOrderIngredient(orderline, ingredient);
                                 }
@@ -254,7 +255,7 @@ namespace MarioPizzaImport
             return orders.Count;
         }
 
-        private static void IncrementOrCreateProductOrderIngredient(orderline orderline, ingredient ingredient)
+        private void IncrementOrCreateProductOrderIngredient(orderline orderline, ingredient ingredient)
         {
             bool ingredientfound = false;
             foreach (productorderingredient orderIngredient in orderline.productorderingredients)
@@ -266,15 +267,17 @@ namespace MarioPizzaImport
                     break;
                 }
             }
+
             if (ingredientfound == false)
             {
                 CreateProductOrderIngredient(orderline, ingredient);
             }
         }
 
-        private static void CreateProductOrderIngredient(orderline orderline, ingredient ingredient)
+        private void CreateProductOrderIngredient(orderline orderline, ingredient ingredient)
         {
             productorderingredient productorderingredient = new productorderingredient();
+            productorderingredient.amount = 1;
             productorderingredient.ingredient = ingredient;
             orderline.productorderingredients.Add(productorderingredient);
         }
