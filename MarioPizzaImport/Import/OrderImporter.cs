@@ -125,7 +125,7 @@ namespace MarioPizzaImport
                                 order.price = Decimal.Parse(Regex.Replace(orderPrice, "[^0-9.]", "")) / 100;
                             }
 
-                            string couponField = paths[20];
+                            string couponField = Encoding.UTF8.GetString(Encoding.Default.GetBytes(paths[20]));
                             if (!string.IsNullOrEmpty(couponField))
                             {
                                 // ToDo change to SingleOrDefault once duplicates are removed from the db.
@@ -133,7 +133,7 @@ namespace MarioPizzaImport
                                 if (coupon == null)
                                 {
                                     coupon = new coupon();
-                                    coupon.description = Encoding.UTF8.GetString(Encoding.Default.GetBytes(couponField));
+                                    coupon.description = couponField;
                                     coupon.startdate = DateTime.Now;
                                     coupon.enddate = DateTime.Now;
                                     coupon.code = "0000";
